@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: stash
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/stash}
+      database: ${MONGODB_DATABASE:stash}
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Seoul
+
+server:
+  port: 9090
+
+logging:
+  level:
+    root: INFO
+    com.ravit.stash: DEBUG
