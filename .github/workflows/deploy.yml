@@ -102,21 +102,6 @@ jobs:
             --query 'Service.ServiceArn' --output text)
           echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
 
-      - name: Wait for App Runner service
-        if: steps.check-service.outputs.exists == 'false'
-        run: |
-          SERVICE_ARN="${{ steps.create-service.outputs.arn }}"
-          for i in {1..60}; do
-            STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.Status' --output text)
-            if [ "$STATUS" == "RUNNING" ]; then
-              exit 0
-            elif [ "$STATUS" == "CREATE_FAILED" ]; then
-              exit 1
-            fi
-            sleep 10
-          done
-          exit 1
-
       - name: Deploy to existing App Runner
         if: steps.check-service.outputs.exists == 'true'
         run: |
