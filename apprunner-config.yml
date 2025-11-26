@@ -1,0 +1,16 @@
+service:
+  name: stash
+  port: "9090"
+  cpu: "0.25 vCPU"
+  memory: "1 GB"
+
+healthCheck:
+  protocol: HTTP
+  path: /health
+  interval: 10
+  timeout: 5
+  healthyThreshold: 1
+  unhealthyThreshold: 5
+
+runtime:
+  javaToolOptions: "-Xmx512m"
