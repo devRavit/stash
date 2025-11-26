@@ -21,7 +21,7 @@ jobs:
       - name: Load App Runner config
         id: config
         run: |
-          CONFIG=".github/workflows/apprunner-config.yml"
+          CONFIG=".github/config/apprunner-config.yml"
           echo "name=$(yq '.service.name' $CONFIG)" >> $GITHUB_OUTPUT
           echo "port=$(yq '.service.port' $CONFIG)" >> $GITHUB_OUTPUT
           echo "cpu=$(yq '.service.cpu' $CONFIG)" >> $GITHUB_OUTPUT
