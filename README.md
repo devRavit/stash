@@ -61,6 +61,6 @@ src/
 
 ## Recent Changes
 
-[![Latest](https://img.shields.io/badge/Latest-v0.0.3-purple)](./docs/CHANGELOG.md)
+[![Latest](https://img.shields.io/badge/Latest-v0.0.4-purple)](./docs/CHANGELOG.md)
 
-> AWS App Runner를 활용한 배포 자동화 환경을 구축하고, CI 파이프라인에 lint 검사를 추가했습니다.
+> Spring Boot 4.0 호환성 문제를 수정하고, 배포 안정성을 개선했습니다.
