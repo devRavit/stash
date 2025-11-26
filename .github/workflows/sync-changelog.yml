@@ -1,0 +1,42 @@
+name: Sync Changelog to README
+
+on:
+  push:
+    paths:
+      - 'docs/CHANGELOG.md'
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract latest changelog
+        id: changelog
+        run: |
+          # CHANGELOG.md에서 최신 버전과 요약 추출
+          VERSION=$(grep -oP '!\[v[0-9.]+\]' docs/CHANGELOG.md | head -1 | tr -d '![]')
+          SUMMARY=$(grep -A1 '> > ##' docs/CHANGELOG.md | head -2 | tail -1 | sed 's/> > //')
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
+
+      - name: Update README
+        run: |
+          VERSION="${{ steps.changelog.outputs.version }}"
+          SUMMARY="${{ steps.changelog.outputs.summary }}"
+
+          # README의 Recent Changes 섹션 업데이트
+          sed -i "s|!\[Latest\](https://img.shields.io/badge/Latest-v[0-9.]*-purple)|![Latest](https://img.shields.io/badge/Latest-${VERSION}-purple)|g" README.md
+          sed -i "s|^> .*|> ${SUMMARY}|g" README.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --staged --quiet || git commit -m "docs: README changelog 자동 동기화"
+          git push
