@@ -4,9 +4,9 @@
 
 ## Tech Stack
 
-- **Language**: Kotlin
+- **Language**: Kotlin 2.2.21
 - **Framework**: Spring Boot 4.0.0
-- **JDK**: 25
+- **JDK**: 24
 - **Database**: MongoDB Cloud (Atlas)
 - **Build Tool**: Gradle (Kotlin DSL)
 
@@ -20,7 +20,7 @@
 
 ### Prerequisites
 
-- JDK 25
+- JDK 24
 - MongoDB Cloud Atlas 계정
 
 ### Environment Variables
@@ -58,3 +58,9 @@ src/
 │       └── application.yml
 └── test/
 ```
+
+## Recent Changes
+
+[![Latest](https://img.shields.io/badge/Latest-v0.0.2-purple)](./docs/CHANGELOG.md)
+
+> Kotlin 2.2.21 및 JDK 24 마이그레이션

@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/health")
 class HealthController {
-
     @GetMapping
-    fun health(): Map<String, String> {
-        return mapOf(
+    fun health(): Map<String, String> =
+        mapOf(
             "status" to "UP",
-            "service" to "stash"
+            "service" to "stash",
         )
-    }
 }
