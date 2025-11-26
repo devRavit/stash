@@ -8,12 +8,14 @@ spring:
       database: ${MONGODB_DATABASE:stash}
 
   jackson:
-    serialization:
-      write-dates-as-timestamps: false
     time-zone: Asia/Seoul
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 
 server:
   port: 9090
+  shutdown: graceful
 
 logging:
   level:
