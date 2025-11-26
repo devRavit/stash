@@ -61,6 +61,6 @@ src/
 
 ## Recent Changes
 
-[![Latest](https://img.shields.io/badge/Latest-v0.0.2-purple)](./docs/CHANGELOG.md)
+[![Latest](https://img.shields.io/badge/Latest-v0.0.3-purple)](./docs/CHANGELOG.md)
 
-> Kotlin 2.2.21 및 JDK 24 마이그레이션
+> AWS App Runner를 활용한 배포 자동화 환경을 구축하고, CI 파이프라인에 lint 검사를 추가했습니다.
