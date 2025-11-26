@@ -19,24 +19,52 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract latest changelog
+      - name: Extract recent changes
         id: changelog
         run: |
-          # CHANGELOG.md에서 최신 버전과 요약 추출
-          VERSION=$(grep -oP '!\[v[0-9.]+\]' docs/CHANGELOG.md | head -1 | tr -d '![]')
-          SUMMARY=$(grep -A1 '> > ##' docs/CHANGELOG.md | head -2 | tail -1 | sed 's/> > //')
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
+          # 최근 3개 버전 추출
+          awk '
+            /^## v[0-9]+\.[0-9]+\.[0-9]+/ {
+              if (count >= 3) exit
+              count++
+              version = $2
+              getline; gsub(/`/, "", $0); datetime = $0
+              getline; summary = $0
+              items = ""
+              while (getline > 0) {
+                if (/^---$/ || /^## v/) break
+                if (/^- /) items = items $0 "\n"
+              }
+              print version "|" datetime "|" summary "|" items
+            }
+          ' docs/CHANGELOG.md > /tmp/changes.txt
 
       - name: Update README
         run: |
-          VERSION="${{ steps.changelog.outputs.version }}"
-          SUMMARY="${{ steps.changelog.outputs.summary }}"
+          # Recent Changes 섹션 생성
+          CHANGES=""
+          FIRST=true
+          while IFS='|' read -r version datetime summary items; do
+            if [ "$FIRST" = true ]; then
+              BADGE="purple"
+              FIRST=false
+            else
+              BADGE="gray"
+            fi
+            CHANGES="${CHANGES}> [![${version}](https://img.shields.io/badge/${version}-${BADGE})](./docs/CHANGELOG.md#${version//./}) \`${datetime}\`\n"
+            while IFS= read -r item; do
+              [ -n "$item" ] && CHANGES="${CHANGES}> ${item}\n"
+            done <<< "$items"
+            CHANGES="${CHANGES}\n"
+          done < /tmp/changes.txt
 
-          # README의 Recent Changes 섹션 업데이트
-          sed -i "s|!\[Latest\](https://img.shields.io/badge/Latest-v[0-9.]*-purple)|![Latest](https://img.shields.io/badge/Latest-${VERSION}-purple)|g" README.md
-          sed -i "s|^> .*|> ${SUMMARY}|g" README.md
+          # README 업데이트
+          awk -v changes="$CHANGES" '
+            /^## Recent Changes/ { print; print ""; printf changes; skip=1; next }
+            skip && /^## / && !/^## Recent Changes/ { skip=0 }
+            skip && /^\[전체 변경 내역/ { skip=0 }
+            !skip { print }
+          ' README.md > README.tmp && mv README.tmp README.md
 
       - name: Commit changes
         run: |
