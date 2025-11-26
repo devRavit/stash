@@ -21,16 +21,18 @@ jobs:
       - name: Load App Runner config
         id: config
         run: |
-          echo "name=$(yq '.service.name' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "port=$(yq '.service.port' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "cpu=$(yq '.service.cpu' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "memory=$(yq '.service.memory' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "health_path=$(yq '.healthCheck.path' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "health_interval=$(yq '.healthCheck.interval' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "health_timeout=$(yq '.healthCheck.timeout' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "health_healthy=$(yq '.healthCheck.healthyThreshold' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "health_unhealthy=$(yq '.healthCheck.unhealthyThreshold' apprunner-config.yml)" >> $GITHUB_OUTPUT
-          echo "java_opts=$(yq '.runtime.javaToolOptions' apprunner-config.yml)" >> $GITHUB_OUTPUT
+          CONFIG=".github/workflows/apprunner-config.yml"
+          echo "name=$(yq '.service.name' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "port=$(yq '.service.port' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "cpu=$(yq '.service.cpu' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "memory=$(yq '.service.memory' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "health_path=$(yq '.healthCheck.path' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "health_interval=$(yq '.healthCheck.interval' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "health_timeout=$(yq '.healthCheck.timeout' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "health_healthy=$(yq '.healthCheck.healthyThreshold' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "health_unhealthy=$(yq '.healthCheck.unhealthyThreshold' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "java_opts=$(yq '.runtime.javaToolOptions' $CONFIG)" >> $GITHUB_OUTPUT
+          echo "version=$(grep 'version = ' build.gradle.kts | sed 's/.*"\(.*\)"/\1/')" >> $GITHUB_OUTPUT
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -46,11 +48,11 @@ jobs:
       - name: Build and push image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
           SERVICE_NAME: ${{ steps.config.outputs.name }}
+          VERSION: ${{ steps.config.outputs.version }}
         run: |
-          docker build -t $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG -t $ECR_REGISTRY/$SERVICE_NAME:latest .
-          docker push $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$SERVICE_NAME:$VERSION -t $ECR_REGISTRY/$SERVICE_NAME:latest .
+          docker push $ECR_REGISTRY/$SERVICE_NAME:$VERSION
           docker push $ECR_REGISTRY/$SERVICE_NAME:latest
 
       - name: Check if App Runner service exists
