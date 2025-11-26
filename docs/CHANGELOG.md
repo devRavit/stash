@@ -4,6 +4,18 @@
 
 ---
 
+## 2025-11-27 (00:00) ![v0.0.4](https://img.shields.io/badge/v0.0.4-purple)
+> > ## Spring Boot 4.0 호환성 및 배포 개선
+> > Spring Boot 4.0 호환성 문제를 수정하고, 배포 안정성을 개선했습니다.
+> > > ### ![Bugfix](https://img.shields.io/badge/Bugfix-red) Spring Boot 4.0 호환성
+> > - Jackson write-dates-as-timestamps 옵션 제거
+> > > ### ![Config](https://img.shields.io/badge/Config-gray) 배포 설정 개선
+> > - Graceful shutdown 설정 추가 (30초 타임아웃)
+> > - apprunner-config.yml을 .github/workflows로 이동
+> > - ECR 이미지 태그를 버전 기반으로 변경 (v0.0.4 형식)
+
+---
+
 ## 2025-11-26 (23:00) ![v0.0.3](https://img.shields.io/badge/v0.0.3-purple)
 > > ## AWS App Runner CI/CD 파이프라인 구축
 > > AWS App Runner를 활용한 배포 자동화 환경을 구축하고, CI 파이프라인에 lint 검사를 추가했습니다.
