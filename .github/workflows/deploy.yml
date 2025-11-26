@@ -1,0 +1,116 @@
+name: Deploy to AWS App Runner
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECR_REPOSITORY: stash
+  APP_RUNNER_SERVICE: stash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if App Runner service exists
+        id: check-service
+        run: |
+          SERVICE_ARN=$(aws apprunner list-services --query "ServiceSummaryList[?ServiceName=='${{ env.APP_RUNNER_SERVICE }}'].ServiceArn" --output text)
+          if [ -z "$SERVICE_ARN" ] || [ "$SERVICE_ARN" == "None" ]; then
+            echo "exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create App Runner service
+        if: steps.check-service.outputs.exists == 'false'
+        id: create-service
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          SERVICE_ARN=$(aws apprunner create-service \
+            --service-name ${{ env.APP_RUNNER_SERVICE }} \
+            --source-configuration '{
+              "AuthenticationConfiguration": {
+                "AccessRoleArn": "${{ secrets.APP_RUNNER_ECR_ROLE_ARN }}"
+              },
+              "ImageRepository": {
+                "ImageIdentifier": "'$ECR_REGISTRY'/'${{ env.ECR_REPOSITORY }}':latest",
+                "ImageRepositoryType": "ECR",
+                "ImageConfiguration": {
+                  "Port": "9090",
+                  "RuntimeEnvironmentVariables": {
+                    "JAVA_TOOL_OPTIONS": "-Xmx512m"
+                  }
+                }
+              },
+              "AutoDeploymentsEnabled": false
+            }' \
+            --instance-configuration '{"Cpu": "0.25 vCPU", "Memory": "1 GB"}' \
+            --health-check-configuration '{"Protocol": "HTTP", "Path": "/health", "Interval": 10, "Timeout": 5, "HealthyThreshold": 1, "UnhealthyThreshold": 5}' \
+            --query 'Service.ServiceArn' --output text)
+          echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
+          echo "Created App Runner service: $SERVICE_ARN"
+
+      - name: Wait for App Runner service to be ready
+        if: steps.check-service.outputs.exists == 'false'
+        run: |
+          SERVICE_ARN="${{ steps.create-service.outputs.arn }}"
+          echo "Waiting for service to be ready..."
+          for i in {1..60}; do
+            STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.Status' --output text)
+            echo "[$i/60] Status: $STATUS"
+            if [ "$STATUS" == "RUNNING" ]; then
+              echo "Service is ready!"
+              SERVICE_URL=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.ServiceUrl' --output text)
+              echo "Service URL: https://$SERVICE_URL"
+              exit 0
+            elif [ "$STATUS" == "CREATE_FAILED" ]; then
+              echo "Service creation failed!"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "Timeout waiting for service"
+          exit 1
+
+      - name: Deploy to existing App Runner
+        if: steps.check-service.outputs.exists == 'true'
+        run: |
+          aws apprunner start-deployment --service-arn ${{ steps.check-service.outputs.arn }}
+          echo "Deployment started for: ${{ steps.check-service.outputs.arn }}"
