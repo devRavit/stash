@@ -7,11 +7,13 @@
 ## v0.0.5
 `2025.11.29 17:30`
 
-MongoDB Atlas 연동 설정
+MongoDB Atlas 연동 및 CI/CD 개선
 
 - MongoDB Atlas 클러스터 연결 설정
 - local/prod 환경별 프로필 분리
 - MongoConfiguration 추가 (connection pool, socket, cluster 설정)
+- GitHub Deployments 연동 (배포 상태 표시)
+- 배포 성공 시 자동 Release 생성 (v태그)
 
 ---
 
