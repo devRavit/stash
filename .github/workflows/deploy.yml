@@ -125,23 +125,26 @@ jobs:
           HEALTH_HEALTHY: ${{ steps.config.outputs.health_healthy }}
           HEALTH_UNHEALTHY: ${{ steps.config.outputs.health_unhealthy }}
           JAVA_OPTS: ${{ steps.config.outputs.java_opts }}
-          ROLE_ARN: ${{ secrets.APP_RUNNER_ECR_ROLE_ARN }}
+          ECR_ROLE_ARN: ${{ secrets.APP_RUNNER_ECR_ROLE_ARN }}
+          INSTANCE_ROLE_ARN: ${{ secrets.APP_RUNNER_INSTANCE_ROLE_ARN }}
+          MONGODB_SECRET_ARN: ${{ secrets.MONGODB_SECRET_ARN }}
         run: |
           SERVICE_ARN=$(aws apprunner create-service \
             --service-name "$SERVICE_NAME" \
             --source-configuration "{
-              \"AuthenticationConfiguration\": {\"AccessRoleArn\": \"$ROLE_ARN\"},
+              \"AuthenticationConfiguration\": {\"AccessRoleArn\": \"$ECR_ROLE_ARN\"},
               \"ImageRepository\": {
                 \"ImageIdentifier\": \"$ECR_REGISTRY/$SERVICE_NAME:latest\",
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
                   \"Port\": \"$PORT\",
-                  \"RuntimeEnvironmentVariables\": {\"JAVA_TOOL_OPTIONS\": \"$JAVA_OPTS\"}
+                  \"RuntimeEnvironmentVariables\": {\"JAVA_TOOL_OPTIONS\": \"$JAVA_OPTS\"},
+                  \"RuntimeEnvironmentSecrets\": {\"MONGODB_URI\": \"$MONGODB_SECRET_ARN\"}
                 }
               },
               \"AutoDeploymentsEnabled\": false
             }" \
-            --instance-configuration "{\"Cpu\": \"$CPU\", \"Memory\": \"$MEMORY\"}" \
+            --instance-configuration "{\"Cpu\": \"$CPU\", \"Memory\": \"$MEMORY\", \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"}" \
             --health-check-configuration "{\"Protocol\": \"HTTP\", \"Path\": \"$HEALTH_PATH\", \"Interval\": $HEALTH_INTERVAL, \"Timeout\": $HEALTH_TIMEOUT, \"HealthyThreshold\": $HEALTH_HEALTHY, \"UnhealthyThreshold\": $HEALTH_UNHEALTHY}" \
             --query 'Service.ServiceArn' --output text)
           echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
@@ -192,6 +195,8 @@ jobs:
       - name: Create GitHub Release
         if: success()
         uses: actions/github-script@v7
+        env:
+          CHANGELOG_CONTENT: ${{ steps.changelog.outputs.content }}
         with:
           script: |
             const version = '${{ steps.version.outputs.version }}';
@@ -210,7 +215,7 @@ jobs:
               // Tag doesn't exist, create release
             }
 
-            const changelog = `${{ steps.changelog.outputs.content }}`;
+            const changelog = process.env.CHANGELOG_CONTENT || '';
             const footer = `\n---\n**Tag:** ${tagName}\n**Commit:** ${context.sha.substring(0, 7)}`;
             const body = changelog ? changelog + footer : `Deployed to production via AWS App Runner.${footer}`;
 
