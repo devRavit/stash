@@ -1,0 +1,8 @@
+spring:
+  mongodb:
+    uri: ${MONGODB_URI}
+
+logging:
+  level:
+    root: WARN
+    com.ravit.stash: INFO
