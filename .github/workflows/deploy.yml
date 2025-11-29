@@ -1,35 +1,25 @@
-name: CI & Deploy
+name: Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  ci:
+  build-push:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     outputs:
+      image_uri: ${{ steps.build.outputs.image_uri }}
       version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up JDK 24
-        uses: actions/setup-java@v4
         with:
-          java-version: '24'
-          distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Ktlint Check
-        run: ./gradlew ktlintCheck
-
-      - name: Build
-        run: ./gradlew build -x test
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Extract version
         id: version
@@ -40,17 +30,6 @@ jobs:
             exit 1
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-  build-push:
-    needs: ci
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    outputs:
-      image_uri: ${{ steps.build.outputs.image_uri }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -68,7 +47,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: stash
-          VERSION: ${{ needs.ci.outputs.version }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
           docker build -t $IMAGE_URI -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
@@ -77,17 +56,19 @@ jobs:
           echo "image_uri=$IMAGE_URI" >> $GITHUB_OUTPUT
 
   trigger-deploy:
-    needs: [ci, build-push]
+    needs: build-push
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Extract changelog for version
         id: changelog
         run: |
-          VERSION="${{ needs.ci.outputs.version }}"
+          VERSION="${{ needs.build-push.outputs.version }}"
           CHANGELOG=$(awk -v ver="$VERSION" '/^## v/{found=0} $0 ~ "^## v"ver{found=1; next} found && /^---/{exit} found' docs/CHANGELOG.md)
           CHANGELOG_ESCAPED=$(echo "$CHANGELOG" | jq -Rs '.')
           echo "content=$CHANGELOG_ESCAPED" >> $GITHUB_OUTPUT
@@ -103,8 +84,8 @@ jobs:
               "event_type": "deploy-apprunner",
               "client_payload": {
                 "project": "stash",
-                "version": "${{ needs.ci.outputs.version }}",
-                "sha": "${{ github.sha }}",
+                "version": "${{ needs.build-push.outputs.version }}",
+                "sha": "${{ github.event.workflow_run.head_sha || github.sha }}",
                 "image_uri": "${{ needs.build-push.outputs.image_uri }}",
                 "changelog": ${{ steps.changelog.outputs.content }}
               }

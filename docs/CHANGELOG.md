@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.8
+`2025.11.29 22:45`
+
+CI/CD workflow 분리
+
+- CI workflow 성공 후 Deploy workflow 실행되도록 변경
+- `workflow_run` 이벤트로 workflow 연결
+- main push 시 중복 실행 제거
+
+---
+
 ## v0.0.7
 `2025.11.29 22:30`
 
