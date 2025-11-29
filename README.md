@@ -4,7 +4,13 @@
 
 ## Recent Changes
 
-[![v0.0.5](https://img.shields.io/badge/v0.0.5-purple)](./docs/CHANGELOG.md#v005) `2025.11.29 17:30`
+[![v0.0.6](https://img.shields.io/badge/v0.0.6-purple)](./docs/CHANGELOG.md#v006) `2025.11.29 22:00`
+- `/health`: AWS 헬스체크용 단순 "OK" 응답
+- `/internal/status`: 상세 상태 모니터링 (버전, DB 연결 상태)
+- `StatusInternalController` 추가
+- `BuildProperties`를 활용한 버전 정보 노출
+
+[![v0.0.5](https://img.shields.io/badge/v0.0.5-gray)](./docs/CHANGELOG.md#v005) `2025.11.29 17:30`
 - MongoDB Atlas 클러스터 연결 설정
 - local/prod 환경별 프로필 분리
 - MongoConfiguration 추가 (connection pool, socket, cluster 설정)
@@ -15,11 +21,6 @@
 - Jackson write-dates-as-timestamps 옵션 제거
 - Graceful shutdown 설정 추가 (30초 타임아웃)
 - ECR 이미지 태그를 버전 기반으로 변경
-
-[![v0.0.3](https://img.shields.io/badge/v0.0.3-gray)](./docs/CHANGELOG.md#v003) `2025.11.26 23:00`
-- Docker 컨테이너 이미지 빌드 설정
-- AWS ECR/App Runner 서비스 생성
-- GitHub Actions CI/CD 워크플로우 추가
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
