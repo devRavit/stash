@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.7
+`2025.11.29 22:30`
+
+AWS Secrets Manager 동적 주입 지원
+
+- MongoDB URI를 환경변수에서 Secrets Manager 주입 방식으로 변경
+- `spring.mongodb.uri` → `SPRING_MONGODB_URI` 환경변수로 자동 변환
+- production 환경에서 deployment-hub를 통한 secret 주입
+
+---
+
 ## v0.0.6
 `2025.11.29 22:00`
 
