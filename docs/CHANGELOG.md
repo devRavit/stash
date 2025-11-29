@@ -4,6 +4,19 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.10
+`2025.11.30 04:00`
+
+Health Check 확장성 개선
+
+- `DependencyHealthIndicator` 인터페이스 도입으로 확장 가능한 health check 구조
+- MongoDB replica set 노드 상태 모니터링 (PRIMARY/SECONDARY/ARBITER)
+- UP/DEGRADED/DOWN 3단계 상태 체계 도입
+- Critical dependency 구분 (DB down = 서비스 DOWN, 비critical = DEGRADED)
+- `MongoClient.clusterDescription` 활용하여 Atlas 무료티어 호환
+
+---
+
 ## v0.0.9
 `2025.11.29 23:00`
 
