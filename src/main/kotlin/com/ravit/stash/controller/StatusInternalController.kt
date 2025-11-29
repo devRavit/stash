@@ -1,7 +1,9 @@
 package com.ravit.stash.controller
 
+import com.ravit.stash.health.DependencyHealth
+import com.ravit.stash.health.DependencyHealthIndicator
+import com.ravit.stash.health.HealthStatusType
 import org.springframework.boot.info.BuildProperties
-import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -9,36 +11,47 @@ import org.springframework.web.bind.annotation.RestController
 data class StatusResponse(
     val service: String,
     val version: String,
-    val database: DatabaseStatus,
-)
-
-data class DatabaseStatus(
-    val status: String,
-    val type: String,
+    val status: HealthStatusType,
+    val dependencies: List<DependencyHealth>,
 )
 
 @RestController
 @RequestMapping("/internal/status")
 class StatusInternalController(
     private val buildProperties: BuildProperties,
-    private val mongoTemplate: MongoTemplate,
+    private val healthIndicators: List<DependencyHealthIndicator>,
 ) {
     @GetMapping
     fun status(): StatusResponse {
-        val dbStatus = checkDatabase()
+        val results =
+            healthIndicators.map { indicator ->
+                indicator to indicator.check()
+            }
+        val dependencies = results.map { it.second }
+
+        val overallStatus = calculateOverallStatus(results)
 
         return StatusResponse(
             service = "stash",
             version = buildProperties.version ?: "unknown",
-            database = dbStatus,
+            status = overallStatus,
+            dependencies = dependencies,
         )
     }
 
-    private fun checkDatabase(): DatabaseStatus =
-        try {
-            mongoTemplate.db.runCommand(org.bson.Document("ping", 1))
-            DatabaseStatus(status = "UP", type = "MongoDB")
-        } catch (e: Exception) {
-            DatabaseStatus(status = "DOWN", type = "MongoDB")
-        }
+    private fun calculateOverallStatus(results: List<Pair<DependencyHealthIndicator, DependencyHealth>>): HealthStatusType {
+        val hasCriticalDown =
+            results.any { (indicator, health) ->
+                indicator.type.critical && health.status == HealthStatusType.DOWN
+            }
+        if (hasCriticalDown) return HealthStatusType.DOWN
+
+        val hasAnyIssue =
+            results.any { (_, health) ->
+                health.status != HealthStatusType.UP
+            }
+        if (hasAnyIssue) return HealthStatusType.DEGRADED
+
+        return HealthStatusType.UP
+    }
 }
