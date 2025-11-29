@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.5
+`2025.11.29 17:30`
+
+MongoDB Atlas 연동 설정
+
+- MongoDB Atlas 클러스터 연결 설정
+- local/prod 환경별 프로필 분리
+- MongoConfiguration 추가 (connection pool, socket, cluster 설정)
+
+---
+
 ## v0.0.4
 `2025.11.27 00:00`
 
