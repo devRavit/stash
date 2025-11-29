@@ -4,6 +4,18 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.6
+`2025.11.29 22:00`
+
+Health 엔드포인트와 Status 모니터링 엔드포인트 분리
+
+- `/health`: AWS 헬스체크용 단순 "OK" 응답
+- `/internal/status`: 상세 상태 모니터링 (버전, DB 연결 상태)
+- `StatusInternalController` 추가
+- `BuildProperties`를 활용한 버전 정보 노출
+
+---
+
 ## v0.0.5
 `2025.11.29 17:30`
 
