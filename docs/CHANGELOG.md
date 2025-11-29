@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.0.9
+`2025.11.29 23:00`
+
+배포 워크플로우에서 하드코딩 제거
+
+- GitHub Actions에서 ECR URL이 secret으로 마스킹되는 문제 해결
+- deployment-hub에서 직접 ECR image URI 구성
+- `project`, `ECR_REPOSITORY` 하드코딩을 `github.event.repository.name`으로 동적 처리
+
+---
+
 ## v0.0.8
 `2025.11.29 22:45`
 

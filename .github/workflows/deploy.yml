@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     outputs:
-      image_uri: ${{ steps.build.outputs.image_uri }}
       version: ${{ steps.version.outputs.version }}
 
     steps:
@@ -43,17 +42,15 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push image
-        id: build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: stash
+          ECR_REPOSITORY: ${{ github.event.repository.name }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
           docker build -t $IMAGE_URI -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $IMAGE_URI
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image_uri=$IMAGE_URI" >> $GITHUB_OUTPUT
 
   trigger-deploy:
     needs: build-push
@@ -83,10 +80,9 @@ jobs:
             -d '{
               "event_type": "deploy-apprunner",
               "client_payload": {
-                "project": "stash",
+                "project": "${{ github.event.repository.name }}",
                 "version": "${{ needs.build-push.outputs.version }}",
                 "sha": "${{ github.event.workflow_run.head_sha || github.sha }}",
-                "image_uri": "${{ needs.build-push.outputs.image_uri }}",
                 "changelog": ${{ steps.changelog.outputs.content }}
               }
             }'
