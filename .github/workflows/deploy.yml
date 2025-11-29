@@ -177,6 +177,18 @@ jobs:
               description: 'Deployment failed'
             });
 
+      - name: Extract changelog for version
+        if: success()
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          # Extract section between ## v{version} and next ---
+          CHANGELOG=$(awk -v ver="$VERSION" '/^## v/{found=0} $0 ~ "^## v"ver{found=1; next} found && /^---/{exit} found' docs/CHANGELOG.md)
+          # Use delimiter for multiline output
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         if: success()
         uses: actions/github-script@v7
@@ -198,12 +210,16 @@ jobs:
               // Tag doesn't exist, create release
             }
 
+            const changelog = `${{ steps.changelog.outputs.content }}`;
+            const footer = `\n---\n**Tag:** ${tagName}\n**Commit:** ${context.sha.substring(0, 7)}`;
+            const body = changelog ? changelog + footer : `Deployed to production via AWS App Runner.${footer}`;
+
             await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: tagName,
               name: tagName,
-              body: `## ${tagName}\n\nDeployed to production via AWS App Runner.\n\n**Commit:** ${context.sha.substring(0, 7)}`,
+              body: body,
               draft: false,
               prerelease: false,
               target_commitish: context.sha
