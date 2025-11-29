@@ -1,4 +1,4 @@
-name: Deploy to AWS App Runner
+name: CI & Trigger Deploy
 
 on:
   push:
@@ -6,20 +6,30 @@ on:
       - main
   workflow_dispatch:
 
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      deployments: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Ktlint Check
+        run: ./gradlew ktlintCheck
+
+      - name: Build
+        run: ./gradlew build -x test
 
       - name: Extract version
         id: version
@@ -31,201 +41,37 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub Deployment
-        id: deployment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const deployment = await github.rest.repos.createDeployment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.sha,
-              environment: 'production',
-              auto_merge: false,
-              required_contexts: [],
-              description: 'Deploy v${{ steps.version.outputs.version }} to AWS App Runner'
-            });
-            return deployment.data.id;
-          result-encoding: string
+  trigger-deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
-      - name: Set Deployment In Progress
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: ${{ steps.deployment.outputs.result }},
-              state: 'in_progress',
-              description: 'Deploying to AWS App Runner...'
-            });
-
-      - name: Load App Runner config
-        id: config
-        run: |
-          CONFIG=".github/config/apprunner-config.yml"
-          echo "name=$(yq '.service.name' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "port=$(yq '.service.port' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "cpu=$(yq '.service.cpu' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "memory=$(yq '.service.memory' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "health_path=$(yq '.healthCheck.path' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "health_interval=$(yq '.healthCheck.interval' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "health_timeout=$(yq '.healthCheck.timeout' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "health_healthy=$(yq '.healthCheck.healthyThreshold' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "health_unhealthy=$(yq '.healthCheck.unhealthyThreshold' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "java_opts=$(yq '.runtime.javaToolOptions' $CONFIG)" >> $GITHUB_OUTPUT
-          echo "version=${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build and push image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          SERVICE_NAME: ${{ steps.config.outputs.name }}
-          VERSION: ${{ steps.config.outputs.version }}
-        run: |
-          docker build -t $ECR_REGISTRY/$SERVICE_NAME:$VERSION -t $ECR_REGISTRY/$SERVICE_NAME:latest .
-          docker push $ECR_REGISTRY/$SERVICE_NAME:$VERSION
-          docker push $ECR_REGISTRY/$SERVICE_NAME:latest
-
-      - name: Check if App Runner service exists
-        id: check-service
-        env:
-          SERVICE_NAME: ${{ steps.config.outputs.name }}
-        run: |
-          SERVICE_ARN=$(aws apprunner list-services --query "ServiceSummaryList[?ServiceName=='$SERVICE_NAME'].ServiceArn" --output text)
-          if [ -z "$SERVICE_ARN" ] || [ "$SERVICE_ARN" == "None" ]; then
-            echo "exists=false" >> $GITHUB_OUTPUT
-          else
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create App Runner service
-        if: steps.check-service.outputs.exists == 'false'
-        id: create-service
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          SERVICE_NAME: ${{ steps.config.outputs.name }}
-          PORT: ${{ steps.config.outputs.port }}
-          CPU: ${{ steps.config.outputs.cpu }}
-          MEMORY: ${{ steps.config.outputs.memory }}
-          HEALTH_PATH: ${{ steps.config.outputs.health_path }}
-          HEALTH_INTERVAL: ${{ steps.config.outputs.health_interval }}
-          HEALTH_TIMEOUT: ${{ steps.config.outputs.health_timeout }}
-          HEALTH_HEALTHY: ${{ steps.config.outputs.health_healthy }}
-          HEALTH_UNHEALTHY: ${{ steps.config.outputs.health_unhealthy }}
-          JAVA_OPTS: ${{ steps.config.outputs.java_opts }}
-          ECR_ROLE_ARN: ${{ secrets.APP_RUNNER_ECR_ROLE_ARN }}
-          INSTANCE_ROLE_ARN: ${{ secrets.APP_RUNNER_INSTANCE_ROLE_ARN }}
-          MONGODB_SECRET_ARN: ${{ secrets.MONGODB_SECRET_ARN }}
-        run: |
-          SERVICE_ARN=$(aws apprunner create-service \
-            --service-name "$SERVICE_NAME" \
-            --source-configuration "{
-              \"AuthenticationConfiguration\": {\"AccessRoleArn\": \"$ECR_ROLE_ARN\"},
-              \"ImageRepository\": {
-                \"ImageIdentifier\": \"$ECR_REGISTRY/$SERVICE_NAME:latest\",
-                \"ImageRepositoryType\": \"ECR\",
-                \"ImageConfiguration\": {
-                  \"Port\": \"$PORT\",
-                  \"RuntimeEnvironmentVariables\": {\"JAVA_TOOL_OPTIONS\": \"$JAVA_OPTS\"},
-                  \"RuntimeEnvironmentSecrets\": {\"MONGODB_URI\": \"$MONGODB_SECRET_ARN\"}
-                }
-              },
-              \"AutoDeploymentsEnabled\": false
-            }" \
-            --instance-configuration "{\"Cpu\": \"$CPU\", \"Memory\": \"$MEMORY\", \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"}" \
-            --health-check-configuration "{\"Protocol\": \"HTTP\", \"Path\": \"$HEALTH_PATH\", \"Interval\": $HEALTH_INTERVAL, \"Timeout\": $HEALTH_TIMEOUT, \"HealthyThreshold\": $HEALTH_HEALTHY, \"UnhealthyThreshold\": $HEALTH_UNHEALTHY}" \
-            --query 'Service.ServiceArn' --output text)
-          echo "arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
-
-      - name: Deploy to existing App Runner
-        if: steps.check-service.outputs.exists == 'true'
-        run: |
-          aws apprunner start-deployment --service-arn ${{ steps.check-service.outputs.arn }}
-
-      - name: Set Deployment Success
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: ${{ steps.deployment.outputs.result }},
-              state: 'success',
-              description: 'Deployed v${{ steps.version.outputs.version }} to production'
-            });
-
-      - name: Set Deployment Failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: ${{ steps.deployment.outputs.result }},
-              state: 'failure',
-              description: 'Deployment failed'
-            });
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Extract changelog for version
-        if: success()
         id: changelog
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          # Extract section between ## v{version} and next ---
+          VERSION="${{ needs.ci.outputs.version }}"
           CHANGELOG=$(awk -v ver="$VERSION" '/^## v/{found=0} $0 ~ "^## v"ver{found=1; next} found && /^---/{exit} found' docs/CHANGELOG.md)
-          # Use delimiter for multiline output
-          echo "content<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # URL encode for JSON safety
+          CHANGELOG_ESCAPED=$(echo "$CHANGELOG" | jq -Rs '.')
+          echo "content=$CHANGELOG_ESCAPED" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub Release
-        if: success()
-        uses: actions/github-script@v7
-        env:
-          CHANGELOG_CONTENT: ${{ steps.changelog.outputs.content }}
-        with:
-          script: |
-            const version = '${{ steps.version.outputs.version }}';
-            const tagName = `v${version}`;
-
-            // Check if tag already exists
-            try {
-              await github.rest.git.getRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `tags/${tagName}`
-              });
-              console.log(`Tag ${tagName} already exists, skipping release creation`);
-              return;
-            } catch (e) {
-              // Tag doesn't exist, create release
-            }
-
-            const changelog = process.env.CHANGELOG_CONTENT || '';
-            const footer = `\n---\n**Tag:** ${tagName}\n**Commit:** ${context.sha.substring(0, 7)}`;
-            const body = changelog ? changelog + footer : `Deployed to production via AWS App Runner.${footer}`;
-
-            await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: tagName,
-              name: tagName,
-              body: body,
-              draft: false,
-              prerelease: false,
-              target_commitish: context.sha
-            });
+      - name: Trigger deployment-hub
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/devRavit/deployment-hub/dispatches \
+            -d '{
+              "event_type": "deploy-apprunner",
+              "client_payload": {
+                "project": "stash",
+                "version": "${{ needs.ci.outputs.version }}",
+                "sha": "${{ github.sha }}",
+                "changelog": ${{ steps.changelog.outputs.content }}
+              }
+            }'
