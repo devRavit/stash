@@ -8,6 +8,8 @@
 - MongoDB Atlas 클러스터 연결 설정
 - local/prod 환경별 프로필 분리
 - MongoConfiguration 추가 (connection pool, socket, cluster 설정)
+- GitHub Deployments 연동 (배포 상태 표시)
+- 배포 성공 시 자동 Release 생성 (v태그)
 
 [![v0.0.4](https://img.shields.io/badge/v0.0.4-gray)](./docs/CHANGELOG.md#v004) `2025.11.27 00:00`
 - Jackson write-dates-as-timestamps 옵션 제거
