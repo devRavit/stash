@@ -48,6 +48,10 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+springBoot {
+    buildInfo()
+}
+
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
     version.set("1.5.0")
     android.set(false)
