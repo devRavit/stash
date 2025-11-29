@@ -1,4 +1,4 @@
-name: CI & Trigger Deploy
+name: CI & Deploy
 
 on:
   push:
@@ -41,10 +41,44 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-  trigger-deploy:
+  build-push:
     needs: ci
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    outputs:
+      image_uri: ${{ steps.build.outputs.image_uri }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        id: build
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: stash
+          VERSION: ${{ needs.ci.outputs.version }}
+        run: |
+          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
+          docker build -t $IMAGE_URI -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $IMAGE_URI
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image_uri=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+  trigger-deploy:
+    needs: [ci, build-push]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -55,7 +89,6 @@ jobs:
         run: |
           VERSION="${{ needs.ci.outputs.version }}"
           CHANGELOG=$(awk -v ver="$VERSION" '/^## v/{found=0} $0 ~ "^## v"ver{found=1; next} found && /^---/{exit} found' docs/CHANGELOG.md)
-          # URL encode for JSON safety
           CHANGELOG_ESCAPED=$(echo "$CHANGELOG" | jq -Rs '.')
           echo "content=$CHANGELOG_ESCAPED" >> $GITHUB_OUTPUT
 
@@ -72,6 +105,7 @@ jobs:
                 "project": "stash",
                 "version": "${{ needs.ci.outputs.version }}",
                 "sha": "${{ github.sha }}",
+                "image_uri": "${{ needs.build-push.outputs.image_uri }}",
                 "changelog": ${{ steps.changelog.outputs.content }}
               }
             }'
