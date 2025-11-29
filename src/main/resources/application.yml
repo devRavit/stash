@@ -1,9 +1,8 @@
 spring:
   application:
     name: stash
-
   mongodb:
-    uri: ${MONGODB_URI:mongodb://localhost:27017/stash}
+    uri: #secret manager
 
   jackson:
     time-zone: Asia/Seoul

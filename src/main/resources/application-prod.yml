@@ -1,6 +1,6 @@
 spring:
   mongodb:
-    uri: ${MONGODB_URI}
+    uri: #secret manager
 
 logging:
   level:
