@@ -2,10 +2,8 @@ spring:
   application:
     name: stash
 
-  data:
-    mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/stash}
-      database: ${MONGODB_DATABASE:stash}
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/stash}
 
   jackson:
     time-zone: Asia/Seoul
