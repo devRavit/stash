@@ -4,7 +4,11 @@
 
 ## Recent Changes
 
-[![v0.0.10](https://img.shields.io/badge/v0.0.10-purple)](./docs/CHANGELOG.md#v0010) `2025.11.30 04:00`
+[![v0.0.11](https://img.shields.io/badge/v0.0.11-purple)](./docs/CHANGELOG.md#v0011) `2025.11.30 14:25`
+- 로컬 개발 시 MongoDB Atlas 연결을 위해 local 프로파일 기본 활성화
+- prod 배포 시 환경변수로 프로파일 오버라이드
+
+[![v0.0.10](https://img.shields.io/badge/v0.0.10-gray)](./docs/CHANGELOG.md#v0010) `2025.11.30 04:00`
 - `DependencyHealthIndicator` 인터페이스 도입으로 확장 가능한 health check 구조
 - MongoDB replica set 노드 상태 모니터링 (PRIMARY/SECONDARY/ARBITER)
 - UP/DEGRADED/DOWN 3단계 상태 체계 도입
@@ -15,11 +19,6 @@
 - GitHub Actions에서 ECR URL이 secret으로 마스킹되는 문제 해결
 - deployment-hub에서 직접 ECR image URI 구성
 - `project`, `ECR_REPOSITORY` 하드코딩을 `github.event.repository.name`으로 동적 처리
-
-[![v0.0.8](https://img.shields.io/badge/v0.0.8-gray)](./docs/CHANGELOG.md#v008) `2025.11.29 22:45`
-- CI workflow 성공 후 Deploy workflow 실행되도록 변경
-- `workflow_run` 이벤트로 workflow 연결
-- main push 시 중복 실행 제거
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
