@@ -26,3 +26,8 @@ ai:
     model: gemini-2.5-flash
     max-tokens: 8192
     temperature: 0.7
+
+google:
+  calendar:
+    application-name: stash
+    calendar-id: primary
