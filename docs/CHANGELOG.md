@@ -4,6 +4,25 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.1.1
+`2026.01.03 02:00`
+
+Google Calendar API 연동 기능 추가
+
+- Google Calendar API v3 연동으로 캘린더 이벤트 생성 기능 구현
+- Domain Layer: CalendarClient 인터페이스 및 DTO (CalendarEventRequest/Response)
+- Infrastructure Layer: GoogleCalendarClient 구현 (Access Token → GoogleCredentials 변환)
+- Service Layer: CalendarService 비즈니스 로직 조율
+- Controller Layer: POST /api/calendar/events 엔드포인트 (Authorization 헤더로 Access Token 전달)
+- DateTimeUtils: EventDateTime ↔ LocalDateTime 변환 유틸리티 (extension function pattern)
+- CalendarException: sealed class 기반 예외 처리 (InvalidAccessToken, CalendarApi, EventCreationFailed)
+- GlobalExceptionHandler: HTTP 상태 코드 매핑 (401, 502, 500)
+- EventBuilder DSL: Type-safe builder 패턴으로 Event 객체 생성 (private constructor + invoke operator)
+- CORS 설정: localhost:3000, ravit.run 허용
+- Stateless 설계: Access Token을 매 요청마다 전달, DB 저장 없음
+
+---
+
 ## v0.1.0
 `2026.01.02 21:30`
 

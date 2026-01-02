@@ -15,7 +15,7 @@ object Versions {
 }
 
 group = "com.ravit"
-version = "0.1.0"
+version = "0.1.1"
 
 java {
     toolchain {
@@ -47,6 +47,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:${Versions.KTOR}")
     implementation("io.ktor:ktor-client-content-negotiation:${Versions.KTOR}")
     implementation("io.ktor:ktor-serialization-jackson:${Versions.KTOR}")
+
+    // Google Calendar API
+    implementation("com.google.api-client:google-api-client:2.0.0")
+    implementation("com.google.oauth-client:google-oauth-client:1.34.1")
+    implementation("com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
 
     // Development
     developmentOnly("org.springframework.boot:spring-boot-devtools")
