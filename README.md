@@ -5,9 +5,13 @@
 ## Recent Changes
 
 [![v0.1.0](https://img.shields.io/badge/v0.1.0-purple)](./docs/CHANGELOG.md#v010) `2026.01.02 21:30`
-- Koog agents 프레임워크 기반 AI 기능 통합
-- Google Gemini API 연동 (음성-텍스트 추출, 캘린더 자동화 등 준비)
-- AI 기능 테스트용 엔드포인트 구현 (`POST /api/ai/chat`)
+- Koog agents 프레임워크 기반 AI 통합 (음성-텍스트, 캘린더 자동화 등 활용 예정)
+- Google Gemini API 클라이언트 구현 (GeminiClient)
+- AI 기능 테스트용 엔드포인트 추가 (`POST /api/ai/chat`)
+- HTTP 요청을 위한 Ktor HttpClient 설정
+- API 인증을 위해 x-goog-api-key 헤더 사용
+- 디버그 로그에서 민감정보 제거
+- 의존성 업데이트: Ktor 3.2.3, Koog agents 0.6.0
 - gemini-2.5-flash 모델 사용
 
 [![v0.0.11](https://img.shields.io/badge/v0.0.11-gray)](./docs/CHANGELOG.md#v0011) `2025.11.30 14:25`
@@ -18,6 +22,8 @@
 - `DependencyHealthIndicator` 인터페이스 도입으로 확장 가능한 health check 구조
 - MongoDB replica set 노드 상태 모니터링 (PRIMARY/SECONDARY/ARBITER)
 - UP/DEGRADED/DOWN 3단계 상태 체계 도입
+- Critical dependency 구분 (DB down = 서비스 DOWN, 비critical = DEGRADED)
+- `MongoClient.clusterDescription` 활용하여 Atlas 무료티어 호환
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
