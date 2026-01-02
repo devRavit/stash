@@ -1,3 +1,5 @@
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+
 plugins {
     id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
@@ -6,8 +8,14 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
 }
 
+// Dependency Versions
+object Versions {
+    const val KTOR = "3.2.3"
+    const val KOOG_AGENTS = "0.6.0"
+}
+
 group = "com.ravit"
-version = "0.0.11"
+version = "0.1.0"
 
 java {
     toolchain {
@@ -21,13 +29,24 @@ repositories {
 
 dependencies {
     // Spring Boot Starters
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+    // AI - Koog Agents
+    implementation("ai.koog:koog-agents:${Versions.KOOG_AGENTS}")
+
+    // Ktor Client (Koog와 호환되는 버전)
+    implementation("io.ktor:ktor-client-core:${Versions.KTOR}")
+    implementation("io.ktor:ktor-client-cio:${Versions.KTOR}")
+    implementation("io.ktor:ktor-client-content-negotiation:${Versions.KTOR}")
+    implementation("io.ktor:ktor-serialization-jackson:${Versions.KTOR}")
 
     // Development
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -52,7 +71,7 @@ springBoot {
     buildInfo()
 }
 
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+configure<KtlintExtension> {
     version.set("1.5.0")
     android.set(false)
     outputToConsole.set(true)
