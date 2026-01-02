@@ -4,7 +4,20 @@
 
 ## Recent Changes
 
-[![v0.1.0](https://img.shields.io/badge/v0.1.0-purple)](./docs/CHANGELOG.md#v010) `2026.01.02 21:30`
+[![v0.1.1](https://img.shields.io/badge/v0.1.1-purple)](./docs/CHANGELOG.md#v011) `2026.01.03 02:00`
+- Google Calendar API v3 연동으로 캘린더 이벤트 생성 기능 구현
+- Domain Layer: CalendarClient 인터페이스 및 DTO (CalendarEventRequest/Response)
+- Infrastructure Layer: GoogleCalendarClient 구현 (Access Token → GoogleCredentials 변환)
+- Service Layer: CalendarService 비즈니스 로직 조율
+- Controller Layer: POST /api/calendar/events 엔드포인트 (Authorization 헤더로 Access Token 전달)
+- DateTimeUtils: EventDateTime ↔ LocalDateTime 변환 유틸리티 (extension function pattern)
+- CalendarException: sealed class 기반 예외 처리 (InvalidAccessToken, CalendarApi, EventCreationFailed)
+- GlobalExceptionHandler: HTTP 상태 코드 매핑 (401, 502, 500)
+- EventBuilder DSL: Type-safe builder 패턴으로 Event 객체 생성 (private constructor + invoke operator)
+- CORS 설정: localhost:3000, ravit.run 허용
+- Stateless 설계: Access Token을 매 요청마다 전달, DB 저장 없음
+
+[![v0.1.0](https://img.shields.io/badge/v0.1.0-gray)](./docs/CHANGELOG.md#v010) `2026.01.02 21:30`
 - Koog agents 프레임워크 기반 AI 통합 (음성-텍스트, 캘린더 자동화 등 활용 예정)
 - Google Gemini API 클라이언트 구현 (GeminiClient)
 - AI 기능 테스트용 엔드포인트 추가 (`POST /api/ai/chat`)
@@ -17,13 +30,6 @@
 [![v0.0.11](https://img.shields.io/badge/v0.0.11-gray)](./docs/CHANGELOG.md#v0011) `2025.11.30 14:25`
 - 로컬 개발 시 MongoDB Atlas 연결을 위해 local 프로파일 기본 활성화
 - prod 배포 시 환경변수로 프로파일 오버라이드
-
-[![v0.0.10](https://img.shields.io/badge/v0.0.10-gray)](./docs/CHANGELOG.md#v0010) `2025.11.30 04:00`
-- `DependencyHealthIndicator` 인터페이스 도입으로 확장 가능한 health check 구조
-- MongoDB replica set 노드 상태 모니터링 (PRIMARY/SECONDARY/ARBITER)
-- UP/DEGRADED/DOWN 3단계 상태 체계 도입
-- Critical dependency 구분 (DB down = 서비스 DOWN, 비critical = DEGRADED)
-- `MongoClient.clusterDescription` 활용하여 Atlas 무료티어 호환
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
