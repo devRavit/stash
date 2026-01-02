@@ -18,7 +18,7 @@ data class StatusResponse(
 @RestController
 @RequestMapping("/internal/status")
 class StatusInternalController(
-    private val buildProperties: BuildProperties,
+    private val buildProperties: BuildProperties?,
     private val healthIndicators: List<DependencyHealthIndicator>,
 ) {
     @GetMapping
@@ -33,7 +33,7 @@ class StatusInternalController(
 
         return StatusResponse(
             service = "stash",
-            version = buildProperties.version ?: "unknown",
+            version = buildProperties?.version ?: "unknown",
             status = overallStatus,
             dependencies = dependencies,
         )
