@@ -9,10 +9,10 @@ import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.AccessToken
 import com.google.auth.oauth2.GoogleCredentials
 import com.ravit.stash.configuration.GoogleCalendarProperties
-import com.ravit.stash.domain.CalendarClient
-import com.ravit.stash.domain.CalendarEventRequest
-import com.ravit.stash.domain.CalendarEventResponse
-import com.ravit.stash.domain.exception.CalendarException
+import com.ravit.stash.domain.calendar.client.CalendarClient
+import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
+import com.ravit.stash.domain.calendar.dto.CalendarEventResponse
+import com.ravit.stash.domain.calendar.exception.CalendarException
 import com.ravit.stash.utility.DateTimeUtils.toEventDateTime
 import com.ravit.stash.utility.DateTimeUtils.toLocalDateTime
 import kotlinx.coroutines.Dispatchers

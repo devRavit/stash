@@ -1,6 +1,6 @@
 package com.ravit.stash.controller
 
-import com.ravit.stash.domain.exception.CalendarException
+import com.ravit.stash.domain.calendar.exception.CalendarException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

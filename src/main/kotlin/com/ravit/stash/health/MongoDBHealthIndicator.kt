@@ -3,6 +3,9 @@ package com.ravit.stash.health
 import com.mongodb.client.MongoClient
 import com.mongodb.connection.ServerDescription
 import com.mongodb.connection.ServerType
+import com.ravit.stash.shared.code.DependencyType
+import com.ravit.stash.shared.code.HealthStatusType
+import com.ravit.stash.shared.code.MongoNodeStateType
 import org.bson.Document
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Component

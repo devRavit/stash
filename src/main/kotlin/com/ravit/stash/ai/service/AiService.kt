@@ -1,6 +1,6 @@
-package com.ravit.stash.service
+package com.ravit.stash.ai.service
 
-import com.ravit.stash.domain.ChatAgent
+import com.ravit.stash.ai.agent.ChatAgent
 import org.springframework.stereotype.Service
 
 @Service

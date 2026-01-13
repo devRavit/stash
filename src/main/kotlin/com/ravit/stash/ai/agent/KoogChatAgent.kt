@@ -1,4 +1,4 @@
-package com.ravit.stash.domain
+package com.ravit.stash.ai.agent
 
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.prompt.executor.model.PromptExecutor

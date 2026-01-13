@@ -2,7 +2,7 @@ package com.ravit.stash.controller
 
 import com.ravit.stash.health.DependencyHealth
 import com.ravit.stash.health.DependencyHealthIndicator
-import com.ravit.stash.health.HealthStatusType
+import com.ravit.stash.shared.code.HealthStatusType
 import org.springframework.boot.info.BuildProperties
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
