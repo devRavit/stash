@@ -4,6 +4,21 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.0
+`2026.01.14 17:00`
+
+Project/Task 도메인 추가 및 패키지 구조 리팩토링
+
+- Project, Task 도메인 추가 (이력서/포트폴리오 작업 이력 관리)
+- Gemini 기반 Task 키워드 자동 추출 기능 추가
+- 파일당 하나의 클래스/인터페이스 규칙 적용
+- shared/code 패키지에 enum 분리 (CompanyType, TaskType, HealthStatusType 등)
+- ai 패키지 분리 (stash.ai.*)
+- Health 관련 클래스 파일 분리
+- Portfolio → Project로 리네이밍 및 구조 개선
+
+---
+
 ## v0.1.1
 `2026.01.03 02:00`
 

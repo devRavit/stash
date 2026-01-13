@@ -1,4 +1,4 @@
-package com.ravit.stash.domain.exception
+package com.ravit.stash.domain.calendar.exception
 
 sealed class CalendarException(
     message: String,

@@ -1,8 +1,8 @@
-package com.ravit.stash.service
+package com.ravit.stash.domain.calendar.service
 
-import com.ravit.stash.domain.CalendarClient
-import com.ravit.stash.domain.CalendarEventRequest
-import com.ravit.stash.domain.CalendarEventResponse
+import com.ravit.stash.domain.calendar.client.CalendarClient
+import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
+import com.ravit.stash.domain.calendar.dto.CalendarEventResponse
 import org.springframework.stereotype.Service
 
 @Service
