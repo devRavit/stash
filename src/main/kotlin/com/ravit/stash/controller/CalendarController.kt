@@ -1,8 +1,8 @@
 package com.ravit.stash.controller
 
-import com.ravit.stash.domain.CalendarEventRequest
-import com.ravit.stash.domain.CalendarEventResponse
-import com.ravit.stash.service.CalendarService
+import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
+import com.ravit.stash.domain.calendar.dto.CalendarEventResponse
+import com.ravit.stash.domain.calendar.service.CalendarService
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

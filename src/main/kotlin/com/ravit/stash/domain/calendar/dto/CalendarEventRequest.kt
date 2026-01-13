@@ -1,4 +1,4 @@
-package com.ravit.stash.domain
+package com.ravit.stash.domain.calendar.dto
 
 import java.time.LocalDateTime
 
