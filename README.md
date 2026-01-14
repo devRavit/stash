@@ -4,7 +4,14 @@
 
 ## Recent Changes
 
-[![v0.2.2](https://img.shields.io/badge/v0.2.2-purple)](./docs/CHANGELOG.md#v022) `2026.01.15 01:00`
+[![v0.2.3](https://img.shields.io/badge/v0.2.3-purple)](./docs/CHANGELOG.md#v023) `2026.01.15 01:30`
+- DataInternalController 추가 (DELETE /internals/data/*)
+- Project 응답에 tasks 포함 옵션 추가 (?includeTasks=true)
+- seed-data.sh 스크립트 추가 (포트폴리오 데이터 삽입)
+- Request DTO nullable 처리 (Jackson 호환)
+- KITA_ACADEMY enum 제거
+
+[![v0.2.2](https://img.shields.io/badge/v0.2.2-gray)](./docs/CHANGELOG.md#v022) `2026.01.15 01:00`
 - health → actuator 패키지 이동 (Spring Actuator 확장)
 - *Properties → property 패키지 분리
 - TaskPeriod, ProjectPeriod → shared.document.Period로 통합
@@ -22,15 +29,6 @@
 - request/response 패턴 적용 (External 접미사)
 - 서비스 레이어 Command 패턴 도입 (ai/model/command)
 - 파일당 하나의 클래스/인터페이스 규칙 적용
-
-[![v0.2.0](https://img.shields.io/badge/v0.2.0-gray)](./docs/CHANGELOG.md#v020) `2026.01.14 17:00`
-- Project, Task 도메인 추가 (이력서/포트폴리오 작업 이력 관리)
-- Gemini 기반 Task 키워드 자동 추출 기능 추가
-- 파일당 하나의 클래스/인터페이스 규칙 적용
-- shared/code 패키지에 enum 분리 (CompanyType, TaskType, HealthStatusType 등)
-- ai 패키지 분리 (stash.ai.*)
-- Health 관련 클래스 파일 분리
-- Portfolio → Project로 리네이밍 및 구조 개선
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
