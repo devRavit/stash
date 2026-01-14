@@ -4,6 +4,19 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.3
+`2026.01.15 01:30`
+
+데이터 초기화 API 및 Project-Task 연관 응답 추가
+
+- DataInternalController 추가 (DELETE /internals/data/*)
+- Project 응답에 tasks 포함 옵션 추가 (?includeTasks=true)
+- seed-data.sh 스크립트 추가 (포트폴리오 데이터 삽입)
+- Request DTO nullable 처리 (Jackson 호환)
+- KITA_ACADEMY enum 제거
+
+---
+
 ## v0.2.2
 `2026.01.15 01:00`
 
