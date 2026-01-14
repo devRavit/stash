@@ -53,8 +53,8 @@ class ProjectExternalController(
                 name = request.name,
                 summary = request.summary,
                 period = request.period?.toPeriod(),
-                techStack = request.techStack,
-                achievements = request.achievements,
+                techStack = request.techStack ?: emptyList(),
+                achievements = request.achievements ?: emptyList(),
                 teamSize = request.teamSize,
                 role = request.role,
             )

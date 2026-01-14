@@ -12,5 +12,5 @@ data class TaskExternalRequest(
     val period: PeriodExternalRequest? = null,
     val workingDays: Int? = null,
     val details: TaskDetailsExternalRequest? = null,
-    val keywords: List<String> = emptyList(),
+    val keywords: List<String>? = null,
 )
