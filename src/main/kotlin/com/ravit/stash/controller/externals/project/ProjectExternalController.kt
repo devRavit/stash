@@ -1,6 +1,9 @@
-package com.ravit.stash.controller
+package com.ravit.stash.controller.externals.project
 
+import com.ravit.stash.controller.externals.project.request.ProjectExternalRequest
+import com.ravit.stash.controller.externals.project.response.ProjectExternalResponse
 import com.ravit.stash.domain.project.document.Project
+import com.ravit.stash.domain.project.document.ProjectPeriod
 import com.ravit.stash.domain.project.service.ProjectService
 import com.ravit.stash.shared.code.CompanyType
 import org.springframework.http.ResponseEntity
@@ -14,38 +17,54 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/projects")
-class ProjectController(
+@RequestMapping("/externals/projects")
+class ProjectExternalController(
     private val projectService: ProjectService,
 ) {
     @GetMapping
     fun findAll(
         @RequestParam company: CompanyType?,
         @RequestParam techStack: String?,
-    ): ResponseEntity<List<Project>> {
+    ): ResponseEntity<List<ProjectExternalResponse>> {
         val projects =
             when {
                 company != null -> projectService.findByCompany(company)
                 techStack != null -> projectService.findByTechStack(techStack)
                 else -> projectService.findAll()
             }
-        return ResponseEntity.ok(projects)
+        return ResponseEntity.ok(projects.map { ProjectExternalResponse.from(it) })
     }
 
     @GetMapping("/{id}")
     fun findById(
         @PathVariable id: String,
-    ): ResponseEntity<Project> {
+    ): ResponseEntity<ProjectExternalResponse> {
         val project = projectService.findById(id) ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(project)
+        return ResponseEntity.ok(ProjectExternalResponse.from(project))
     }
 
     @PostMapping
     fun save(
-        @RequestBody project: Project,
-    ): ResponseEntity<Project> {
+        @RequestBody request: ProjectExternalRequest,
+    ): ResponseEntity<ProjectExternalResponse> {
+        val project =
+            Project(
+                id = request.id,
+                company = request.company,
+                name = request.name,
+                summary = request.summary,
+                period =
+                    ProjectPeriod(
+                        startedAt = request.period.startedAt,
+                        endedAt = request.period.endedAt,
+                    ),
+                techStack = request.techStack,
+                achievements = request.achievements,
+                teamSize = request.teamSize,
+                role = request.role,
+            )
         val saved = projectService.save(project)
-        return ResponseEntity.ok(saved)
+        return ResponseEntity.ok(ProjectExternalResponse.from(saved))
     }
 
     @DeleteMapping("/{id}")
