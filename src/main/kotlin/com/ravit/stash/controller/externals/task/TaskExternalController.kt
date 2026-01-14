@@ -59,7 +59,7 @@ class TaskExternalController(
                 period = request.period?.toPeriod(),
                 workingDays = request.workingDays,
                 details = request.details?.toTaskDetails(),
-                keywords = request.keywords,
+                keywords = request.keywords ?: emptyList(),
             )
         val saved =
             if (extractKeywords) {
