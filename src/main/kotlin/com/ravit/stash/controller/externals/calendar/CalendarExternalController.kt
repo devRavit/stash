@@ -2,7 +2,7 @@ package com.ravit.stash.controller.externals.calendar
 
 import com.ravit.stash.controller.externals.calendar.request.CalendarEventExternalRequest
 import com.ravit.stash.controller.externals.calendar.response.CalendarEventExternalResponse
-import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
+import com.ravit.stash.domain.calendar.model.CalendarEventCommand
 import com.ravit.stash.domain.calendar.service.CalendarService
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,7 +24,7 @@ class CalendarExternalController(
     ): CalendarEventExternalResponse {
         val accessToken = authorization.removePrefix("Bearer ").trim()
         val command =
-            CalendarEventRequest(
+            CalendarEventCommand(
                 summary = request.summary,
                 description = request.description,
                 location = request.location,

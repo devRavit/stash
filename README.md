@@ -99,43 +99,20 @@ curl -X POST http://localhost:9090/externals/ai/chat \
 
 ```
 src/main/kotlin/com/ravit/stash/
-├── StashApplication.kt
-├── ai/                              # AI 관련 기능
-│   ├── agent/                       # Koog 에이전트
-│   ├── executor/                    # 프롬프트 실행기
-│   ├── model/command/               # 서비스 레이어 Command
-│   └── service/                     # AI 서비스
-├── configuration/                   # Spring 설정
-├── controller/                      # REST API 엔드포인트
-│   ├── externals/                   # 외부 API (/externals/*)
-│   │   ├── ai/                      # /externals/ai/chat
-│   │   ├── calendar/                # /externals/calendar/events
-│   │   ├── health/                  # /externals/health
-│   │   ├── project/                 # /externals/projects
-│   │   └── task/                    # /externals/tasks
-│   ├── internals/                   # 내부 API (/internals/*)
-│   │   └── status/                  # /internals/status
-│   └── GlobalExceptionHandler.kt
-├── domain/                          # 도메인 레이어
-│   ├── calendar/                    # 캘린더 도메인
-│   │   ├── client/
-│   │   ├── dto/
-│   │   ├── exception/
-│   │   └── service/
-│   ├── project/                     # 프로젝트 도메인
-│   │   ├── document/
-│   │   ├── repository/
-│   │   └── service/
-│   └── task/                        # 태스크 도메인
-│       ├── document/
-│       ├── repository/
-│       └── service/
-├── health/                          # 헬스체크 인디케이터
-├── infrastructure/                  # 외부 시스템 연동
-│   ├── extension/
-│   ├── gemini/                      # Google Gemini API
-│   └── google/calendar/             # Google Calendar API
-├── shared/                          # 공유 코드
-│   └── code/                        # Enum 타입 정의
-└── utility/                         # 유틸리티
+├── actuator/           # Spring Actuator 확장 (HealthIndicator 등)
+├── ai/                 # AI 기능 (에이전트, 프롬프트 실행기, 서비스)
+├── configuration/      # Spring 설정 클래스
+├── controller/         # REST API 엔드포인트
+│   ├── externals/      # 외부 공개 API (/externals/*)
+│   │   └── shared/     # 공용 Request/Response
+│   └── internals/      # 내부 관리 API (/internals/*)
+├── domain/             # 비즈니스 도메인 (document, repository, service)
+├── infrastructure/     # 서드파티 연동 (Gemini, Google Calendar 등)
+├── property/           # @ConfigurationProperties 클래스
+├── shared/             # 공용 코드
+│   ├── annotation/     # 커스텀 어노테이션
+│   ├── code/           # Enum 타입
+│   ├── document/       # 공용 Document/Value Object
+│   └── serializer/     # Jackson Serializer
+└── utility/            # 유틸리티
 ```

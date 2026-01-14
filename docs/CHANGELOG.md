@@ -4,6 +4,24 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.2
+`2026.01.15 01:00`
+
+패키지 구조 개선 및 공용 컴포넌트 정리
+
+- health → actuator 패키지 이동 (Spring Actuator 확장)
+- *Properties → property 패키지 분리
+- TaskPeriod, ProjectPeriod → shared.document.Period로 통합
+- TaskDetails → Task.kt 내부로 이동 (도메인 전용 value object)
+- controller/externals/shared 추가 (공용 Request/Response)
+- @WithKstZoneTime 어노테이션 추가 (KST 타임존 직렬화)
+- @Indexed 추가 (Task.projectId, Task.type, Project.company)
+- 객체 변환 패턴 적용 (request.toXxx(), Response.from())
+- UUID → ObjectId 전환
+- MongoDB auto-index-creation 설정
+
+---
+
 ## v0.2.1
 `2026.01.15 00:30`
 

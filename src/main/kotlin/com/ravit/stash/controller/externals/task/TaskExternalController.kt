@@ -3,10 +3,9 @@ package com.ravit.stash.controller.externals.task
 import com.ravit.stash.controller.externals.task.request.TaskExternalRequest
 import com.ravit.stash.controller.externals.task.response.TaskExternalResponse
 import com.ravit.stash.domain.task.document.Task
-import com.ravit.stash.domain.task.document.TaskDetails
-import com.ravit.stash.domain.task.document.TaskPeriod
 import com.ravit.stash.domain.task.service.TaskService
 import com.ravit.stash.shared.code.TaskType
+import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -42,7 +41,7 @@ class TaskExternalController(
     fun findById(
         @PathVariable id: String,
     ): ResponseEntity<TaskExternalResponse> {
-        val task = taskService.findById(id) ?: return ResponseEntity.notFound().build()
+        val task = taskService.findById(ObjectId(id)) ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(TaskExternalResponse.from(task))
     }
 
@@ -53,27 +52,13 @@ class TaskExternalController(
     ): ResponseEntity<TaskExternalResponse> {
         val task =
             Task(
-                id = request.id,
                 projectId = request.projectId,
                 type = request.type,
                 title = request.title,
                 description = request.description,
-                period =
-                    request.period?.let {
-                        TaskPeriod(
-                            startedAt = it.startedAt,
-                            completedAt = it.completedAt,
-                        )
-                    },
+                period = request.period?.toPeriod(),
                 workingDays = request.workingDays,
-                details =
-                    request.details?.let {
-                        TaskDetails(
-                            background = it.background,
-                            solution = it.solution,
-                            impact = it.impact,
-                        )
-                    },
+                details = request.details?.toTaskDetails(),
                 keywords = request.keywords,
             )
         val saved =
@@ -89,7 +74,7 @@ class TaskExternalController(
     fun deleteById(
         @PathVariable id: String,
     ): ResponseEntity<Unit> {
-        taskService.deleteById(id)
+        taskService.deleteById(ObjectId(id))
         return ResponseEntity.noContent().build()
     }
 }

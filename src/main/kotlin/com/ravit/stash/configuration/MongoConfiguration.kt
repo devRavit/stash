@@ -6,11 +6,26 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext
 import java.util.concurrent.TimeUnit
 
 @Configuration
 class MongoConfiguration {
+    @Bean
+    fun mappingMongoConverter(
+        mongoDatabaseFactory: MongoDatabaseFactory,
+        mongoMappingContext: MongoMappingContext,
+        mongoCustomConversions: MongoCustomConversions,
+    ): MappingMongoConverter {
+        val converter = MappingMongoConverter(mongoDatabaseFactory, mongoMappingContext)
+        converter.setTypeMapper(DefaultMongoTypeMapper(null))
+        converter.setCustomConversions(mongoCustomConversions)
+        return converter
+    }
+
     @Bean
     fun mongoClientSettingsCustomizer(): MongoClientSettingsBuilderCustomizer =
         MongoClientSettingsBuilderCustomizer { builder ->

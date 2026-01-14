@@ -3,9 +3,9 @@ package com.ravit.stash.controller.externals.project
 import com.ravit.stash.controller.externals.project.request.ProjectExternalRequest
 import com.ravit.stash.controller.externals.project.response.ProjectExternalResponse
 import com.ravit.stash.domain.project.document.Project
-import com.ravit.stash.domain.project.document.ProjectPeriod
 import com.ravit.stash.domain.project.service.ProjectService
 import com.ravit.stash.shared.code.CompanyType
+import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -39,7 +39,7 @@ class ProjectExternalController(
     fun findById(
         @PathVariable id: String,
     ): ResponseEntity<ProjectExternalResponse> {
-        val project = projectService.findById(id) ?: return ResponseEntity.notFound().build()
+        val project = projectService.findById(ObjectId(id)) ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(ProjectExternalResponse.from(project))
     }
 
@@ -49,15 +49,10 @@ class ProjectExternalController(
     ): ResponseEntity<ProjectExternalResponse> {
         val project =
             Project(
-                id = request.id,
                 company = request.company,
                 name = request.name,
                 summary = request.summary,
-                period =
-                    ProjectPeriod(
-                        startedAt = request.period.startedAt,
-                        endedAt = request.period.endedAt,
-                    ),
+                period = request.period?.toPeriod(),
                 techStack = request.techStack,
                 achievements = request.achievements,
                 teamSize = request.teamSize,
@@ -71,7 +66,7 @@ class ProjectExternalController(
     fun deleteById(
         @PathVariable id: String,
     ): ResponseEntity<Unit> {
-        projectService.deleteById(id)
+        projectService.deleteById(ObjectId(id))
         return ResponseEntity.noContent().build()
     }
 }
