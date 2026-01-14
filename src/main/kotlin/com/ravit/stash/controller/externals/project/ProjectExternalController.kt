@@ -4,6 +4,7 @@ import com.ravit.stash.controller.externals.project.request.ProjectExternalReque
 import com.ravit.stash.controller.externals.project.response.ProjectExternalResponse
 import com.ravit.stash.domain.project.document.Project
 import com.ravit.stash.domain.project.service.ProjectService
+import com.ravit.stash.domain.task.service.TaskService
 import com.ravit.stash.shared.code.CompanyType
 import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/externals/projects")
 class ProjectExternalController(
     private val projectService: ProjectService,
+    private val taskService: TaskService,
 ) {
     @GetMapping
     fun findAll(
         @RequestParam company: CompanyType?,
         @RequestParam techStack: String?,
+        @RequestParam(defaultValue = "false") includeTasks: Boolean,
     ): ResponseEntity<List<ProjectExternalResponse>> {
         val projects =
             when {
@@ -32,15 +35,32 @@ class ProjectExternalController(
                 techStack != null -> projectService.findByTechStack(techStack)
                 else -> projectService.findAll()
             }
-        return ResponseEntity.ok(projects.map { ProjectExternalResponse.from(it) })
+        val responses =
+            if (includeTasks) {
+                projects.map { project ->
+                    val tasks = taskService.findByProjectId(project.id!!.toHexString())
+                    ProjectExternalResponse.from(project, tasks)
+                }
+            } else {
+                projects.map { ProjectExternalResponse.from(it) }
+            }
+        return ResponseEntity.ok(responses)
     }
 
     @GetMapping("/{id}")
     fun findById(
         @PathVariable id: String,
+        @RequestParam(defaultValue = "false") includeTasks: Boolean,
     ): ResponseEntity<ProjectExternalResponse> {
         val project = projectService.findById(ObjectId(id)) ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(ProjectExternalResponse.from(project))
+        val response =
+            if (includeTasks) {
+                val tasks = taskService.findByProjectId(id)
+                ProjectExternalResponse.from(project, tasks)
+            } else {
+                ProjectExternalResponse.from(project)
+            }
+        return ResponseEntity.ok(response)
     }
 
     @PostMapping
