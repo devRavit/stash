@@ -4,7 +4,16 @@
 
 ## Recent Changes
 
-[![v0.1.1](https://img.shields.io/badge/v0.1.1-purple)](./docs/CHANGELOG.md#v011) `2026.01.03 02:00`
+[![v0.2.0](https://img.shields.io/badge/v0.2.0-purple)](./docs/CHANGELOG.md#v020) `2026.01.14 17:00`
+- Project, Task 도메인 추가 (이력서/포트폴리오 작업 이력 관리)
+- Gemini 기반 Task 키워드 자동 추출 기능 추가
+- 파일당 하나의 클래스/인터페이스 규칙 적용
+- shared/code 패키지에 enum 분리 (CompanyType, TaskType, HealthStatusType 등)
+- ai 패키지 분리 (stash.ai.*)
+- Health 관련 클래스 파일 분리
+- Portfolio → Project로 리네이밍 및 구조 개선
+
+[![v0.1.1](https://img.shields.io/badge/v0.1.1-gray)](./docs/CHANGELOG.md#v011) `2026.01.03 02:00`
 - Google Calendar API v3 연동으로 캘린더 이벤트 생성 기능 구현
 - Domain Layer: CalendarClient 인터페이스 및 DTO (CalendarEventRequest/Response)
 - Infrastructure Layer: GoogleCalendarClient 구현 (Access Token → GoogleCredentials 변환)
@@ -26,10 +35,6 @@
 - 디버그 로그에서 민감정보 제거
 - 의존성 업데이트: Ktor 3.2.3, Koog agents 0.6.0
 - gemini-2.5-flash 모델 사용
-
-[![v0.0.11](https://img.shields.io/badge/v0.0.11-gray)](./docs/CHANGELOG.md#v0011) `2025.11.30 14:25`
-- 로컬 개발 시 MongoDB Atlas 연결을 위해 local 프로파일 기본 활성화
-- prod 배포 시 환경변수로 프로파일 오버라이드
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
