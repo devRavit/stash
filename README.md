@@ -4,7 +4,14 @@
 
 ## Recent Changes
 
-[![v0.2.0](https://img.shields.io/badge/v0.2.0-purple)](./docs/CHANGELOG.md#v020) `2026.01.14 17:00`
+[![v0.2.1](https://img.shields.io/badge/v0.2.1-purple)](./docs/CHANGELOG.md#v021) `2026.01.15 00:30`
+- Controller를 externals/internals 패키지로 분리
+- API path 변경: /api/* → /externals/*, /internal/* → /internals/*
+- request/response 패턴 적용 (External 접미사)
+- 서비스 레이어 Command 패턴 도입 (ai/model/command)
+- 파일당 하나의 클래스/인터페이스 규칙 적용
+
+[![v0.2.0](https://img.shields.io/badge/v0.2.0-gray)](./docs/CHANGELOG.md#v020) `2026.01.14 17:00`
 - Project, Task 도메인 추가 (이력서/포트폴리오 작업 이력 관리)
 - Gemini 기반 Task 키워드 자동 추출 기능 추가
 - 파일당 하나의 클래스/인터페이스 규칙 적용
@@ -25,16 +32,6 @@
 - EventBuilder DSL: Type-safe builder 패턴으로 Event 객체 생성 (private constructor + invoke operator)
 - CORS 설정: localhost:3000, ravit.run 허용
 - Stateless 설계: Access Token을 매 요청마다 전달, DB 저장 없음
-
-[![v0.1.0](https://img.shields.io/badge/v0.1.0-gray)](./docs/CHANGELOG.md#v010) `2026.01.02 21:30`
-- Koog agents 프레임워크 기반 AI 통합 (음성-텍스트, 캘린더 자동화 등 활용 예정)
-- Google Gemini API 클라이언트 구현 (GeminiClient)
-- AI 기능 테스트용 엔드포인트 추가 (`POST /api/ai/chat`)
-- HTTP 요청을 위한 Ktor HttpClient 설정
-- API 인증을 위해 x-goog-api-key 헤더 사용
-- 디버그 로그에서 민감정보 제거
-- 의존성 업데이트: Ktor 3.2.3, Koog agents 0.6.0
-- gemini-2.5-flash 모델 사용
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
