@@ -4,7 +4,19 @@
 
 ## Recent Changes
 
-[![v0.2.1](https://img.shields.io/badge/v0.2.1-purple)](./docs/CHANGELOG.md#v021) `2026.01.15 00:30`
+[![v0.2.2](https://img.shields.io/badge/v0.2.2-purple)](./docs/CHANGELOG.md#v022) `2026.01.15 01:00`
+- health → actuator 패키지 이동 (Spring Actuator 확장)
+- *Properties → property 패키지 분리
+- TaskPeriod, ProjectPeriod → shared.document.Period로 통합
+- TaskDetails → Task.kt 내부로 이동 (도메인 전용 value object)
+- controller/externals/shared 추가 (공용 Request/Response)
+- @WithKstZoneTime 어노테이션 추가 (KST 타임존 직렬화)
+- @Indexed 추가 (Task.projectId, Task.type, Project.company)
+- 객체 변환 패턴 적용 (request.toXxx(), Response.from())
+- UUID → ObjectId 전환
+- MongoDB auto-index-creation 설정
+
+[![v0.2.1](https://img.shields.io/badge/v0.2.1-gray)](./docs/CHANGELOG.md#v021) `2026.01.15 00:30`
 - Controller를 externals/internals 패키지로 분리
 - API path 변경: /api/* → /externals/*, /internal/* → /internals/*
 - request/response 패턴 적용 (External 접미사)
@@ -19,19 +31,6 @@
 - ai 패키지 분리 (stash.ai.*)
 - Health 관련 클래스 파일 분리
 - Portfolio → Project로 리네이밍 및 구조 개선
-
-[![v0.1.1](https://img.shields.io/badge/v0.1.1-gray)](./docs/CHANGELOG.md#v011) `2026.01.03 02:00`
-- Google Calendar API v3 연동으로 캘린더 이벤트 생성 기능 구현
-- Domain Layer: CalendarClient 인터페이스 및 DTO (CalendarEventRequest/Response)
-- Infrastructure Layer: GoogleCalendarClient 구현 (Access Token → GoogleCredentials 변환)
-- Service Layer: CalendarService 비즈니스 로직 조율
-- Controller Layer: POST /api/calendar/events 엔드포인트 (Authorization 헤더로 Access Token 전달)
-- DateTimeUtils: EventDateTime ↔ LocalDateTime 변환 유틸리티 (extension function pattern)
-- CalendarException: sealed class 기반 예외 처리 (InvalidAccessToken, CalendarApi, EventCreationFailed)
-- GlobalExceptionHandler: HTTP 상태 코드 매핑 (401, 502, 500)
-- EventBuilder DSL: Type-safe builder 패턴으로 Event 객체 생성 (private constructor + invoke operator)
-- CORS 설정: localhost:3000, ravit.run 허용
-- Stateless 설계: Access Token을 매 요청마다 전달, DB 저장 없음
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
