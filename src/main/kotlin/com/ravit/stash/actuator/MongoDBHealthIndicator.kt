@@ -1,4 +1,4 @@
-package com.ravit.stash.health
+package com.ravit.stash.actuator
 
 import com.mongodb.client.MongoClient
 import com.mongodb.connection.ServerDescription

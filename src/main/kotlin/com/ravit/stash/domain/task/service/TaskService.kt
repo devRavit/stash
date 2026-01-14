@@ -4,6 +4,7 @@ import com.ravit.stash.domain.task.document.Task
 import com.ravit.stash.domain.task.repository.TaskRepository
 import com.ravit.stash.shared.code.TaskType
 import kotlinx.coroutines.runBlocking
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,7 +14,7 @@ class TaskService(
 ) {
     fun findAll(): List<Task> = taskRepository.findAll()
 
-    fun findById(id: String): Task? = taskRepository.findById(id).orElse(null)
+    fun findById(id: ObjectId): Task? = taskRepository.findById(id).orElse(null)
 
     fun findByProjectId(projectId: String): List<Task> = taskRepository.findByProjectId(projectId)
 
@@ -28,9 +29,9 @@ class TaskService(
             runBlocking {
                 taskKeywordExtractor.extractKeywords(task)
             }
-        val taskWithKeywords = task.copy(keywords = keywords)
-        return taskRepository.save(taskWithKeywords)
+        task.updateKeywords(keywords)
+        return taskRepository.save(task)
     }
 
-    fun deleteById(id: String) = taskRepository.deleteById(id)
+    fun deleteById(id: ObjectId) = taskRepository.deleteById(id)
 }

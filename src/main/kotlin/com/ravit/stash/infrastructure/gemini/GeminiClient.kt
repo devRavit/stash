@@ -1,10 +1,10 @@
 package com.ravit.stash.infrastructure.gemini
 
-import com.ravit.stash.configuration.AiProperties
 import com.ravit.stash.infrastructure.gemini.request.GeminiRequest
 import com.ravit.stash.infrastructure.gemini.request.GeminiRequestContent
 import com.ravit.stash.infrastructure.gemini.request.GeminiRequestPart
 import com.ravit.stash.infrastructure.gemini.response.GeminiResponse
+import com.ravit.stash.property.AiProperties
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header

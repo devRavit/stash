@@ -1,8 +1,8 @@
 package com.ravit.stash.controller.internals.status
 
+import com.ravit.stash.actuator.DependencyHealth
+import com.ravit.stash.actuator.DependencyHealthIndicator
 import com.ravit.stash.controller.internals.status.response.StatusInternalResponse
-import com.ravit.stash.health.DependencyHealth
-import com.ravit.stash.health.DependencyHealthIndicator
 import com.ravit.stash.shared.code.HealthStatusType
 import org.springframework.boot.info.BuildProperties
 import org.springframework.web.bind.annotation.GetMapping
