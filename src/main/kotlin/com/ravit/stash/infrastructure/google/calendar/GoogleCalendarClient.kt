@@ -4,22 +4,19 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
-import com.google.api.services.calendar.model.EventAttendee
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.AccessToken
 import com.google.auth.oauth2.GoogleCredentials
-import com.ravit.stash.configuration.GoogleCalendarProperties
-import com.ravit.stash.domain.calendar.client.CalendarClient
-import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
-import com.ravit.stash.domain.calendar.dto.CalendarEventResponse
 import com.ravit.stash.domain.calendar.exception.CalendarException
-import com.ravit.stash.utility.DateTimeUtils.toEventDateTime
+import com.ravit.stash.domain.calendar.model.CalendarEvent
+import com.ravit.stash.domain.calendar.model.CalendarEventCommand
+import com.ravit.stash.infrastructure.client.CalendarClient
+import com.ravit.stash.property.GoogleCalendarProperties
 import com.ravit.stash.utility.DateTimeUtils.toLocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 import java.util.Date
 
 @Component
@@ -31,8 +28,8 @@ class GoogleCalendarClient(
     private val jsonFactory = GsonFactory.getDefaultInstance()
 
     companion object {
-        fun from(event: Event): CalendarEventResponse =
-            CalendarEventResponse(
+        fun from(event: Event): CalendarEvent =
+            CalendarEvent(
                 id = event.id,
                 summary = event.summary,
                 htmlLink = event.htmlLink,
@@ -43,16 +40,16 @@ class GoogleCalendarClient(
 
     override suspend fun createEvent(
         accessToken: String,
-        request: CalendarEventRequest,
-    ): CalendarEventResponse =
+        command: CalendarEventCommand,
+    ): CalendarEvent =
         withContext(Dispatchers.IO) {
             try {
                 val calendarService = buildCalendarService(accessToken)
-                val targetCalendarId = request.calendarId ?: properties.calendarId
+                val targetCalendarId = command.calendarId ?: properties.calendarId
 
-                val event = buildEvent(request)
+                val event = buildEvent(command)
 
-                logger.debug("Creating calendar event: summary=${request.summary}, calendarId=$targetCalendarId")
+                logger.debug("Creating calendar event: summary=${command.summary}, calendarId=$targetCalendarId")
 
                 val createdEvent =
                     calendarService
@@ -87,41 +84,14 @@ class GoogleCalendarClient(
             .build()
     }
 
-    private fun buildEvent(request: CalendarEventRequest): Event =
+    private fun buildEvent(command: CalendarEventCommand): Event =
         EventBuilder {
-            summary = request.summary
-            description = request.description
-            location = request.location
-            startDateTime = request.startDateTime
-            endDateTime = request.endDateTime
-            timezone = request.timezone
-            attendees = request.attendees
+            summary = command.summary
+            description = command.description
+            location = command.location
+            startDateTime = command.startDateTime
+            endDateTime = command.endDateTime
+            timezone = command.timezone
+            attendees = command.attendees
         }.build()
-}
-
-class EventBuilder private constructor() {
-    var summary: String? = null
-    var description: String? = null
-    var location: String? = null
-    var startDateTime: LocalDateTime? = null
-    var endDateTime: LocalDateTime? = null
-    var timezone: String = "Asia/Seoul"
-    var attendees: List<String> = emptyList()
-
-    companion object {
-        operator fun invoke(block: EventBuilder.() -> Unit): EventBuilder = EventBuilder().apply(block)
-    }
-
-    fun build(): Event =
-        Event()
-            .setSummary(summary)
-            .setDescription(description)
-            .setLocation(location)
-            .setStart(startDateTime?.toEventDateTime(timezone))
-            .setEnd(endDateTime?.toEventDateTime(timezone))
-            .setAttendees(
-                attendees.map { email ->
-                    EventAttendee().setEmail(email)
-                },
-            )
 }

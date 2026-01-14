@@ -1,8 +1,8 @@
-package com.ravit.stash.domain.calendar.dto
+package com.ravit.stash.domain.calendar.model
 
 import java.time.LocalDateTime
 
-data class CalendarEventRequest(
+data class CalendarEventCommand(
     val summary: String,
     val description: String? = null,
     val location: String? = null,

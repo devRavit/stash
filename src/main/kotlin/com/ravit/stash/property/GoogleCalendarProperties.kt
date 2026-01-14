@@ -1,4 +1,4 @@
-package com.ravit.stash.configuration
+package com.ravit.stash.property
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

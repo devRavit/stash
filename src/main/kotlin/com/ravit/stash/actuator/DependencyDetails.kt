@@ -1,4 +1,4 @@
-package com.ravit.stash.health
+package com.ravit.stash.actuator
 
 sealed interface DependencyDetails
 

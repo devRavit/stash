@@ -6,6 +6,7 @@ import com.ravit.stash.ai.agent.ChatAgent
 import com.ravit.stash.ai.agent.KoogChatAgent
 import com.ravit.stash.ai.executor.GeminiPromptExecutor
 import com.ravit.stash.infrastructure.gemini.GeminiClient
+import com.ravit.stash.property.AiProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

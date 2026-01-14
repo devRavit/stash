@@ -1,4 +1,4 @@
-package com.ravit.stash.health
+package com.ravit.stash.actuator
 
 import com.ravit.stash.shared.code.MongoNodeStateType
 

@@ -1,6 +1,6 @@
 package com.ravit.stash.controller.internals.status.response
 
-import com.ravit.stash.health.DependencyHealth
+import com.ravit.stash.actuator.DependencyHealth
 import com.ravit.stash.shared.code.HealthStatusType
 
 data class StatusInternalResponse(

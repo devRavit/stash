@@ -1,8 +1,8 @@
 package com.ravit.stash.domain.calendar.service
 
-import com.ravit.stash.domain.calendar.client.CalendarClient
-import com.ravit.stash.domain.calendar.dto.CalendarEventRequest
-import com.ravit.stash.domain.calendar.dto.CalendarEventResponse
+import com.ravit.stash.domain.calendar.model.CalendarEvent
+import com.ravit.stash.domain.calendar.model.CalendarEventCommand
+import com.ravit.stash.infrastructure.client.CalendarClient
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,6 +11,6 @@ class CalendarService(
 ) {
     suspend fun createEvent(
         accessToken: String,
-        request: CalendarEventRequest,
-    ): CalendarEventResponse = calendarClient.createEvent(accessToken, request)
+        command: CalendarEventCommand,
+    ): CalendarEvent = calendarClient.createEvent(accessToken, command)
 }
