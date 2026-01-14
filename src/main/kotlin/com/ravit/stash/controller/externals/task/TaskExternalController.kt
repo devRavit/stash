@@ -1,6 +1,10 @@
-package com.ravit.stash.controller
+package com.ravit.stash.controller.externals.task
 
+import com.ravit.stash.controller.externals.task.request.TaskExternalRequest
+import com.ravit.stash.controller.externals.task.response.TaskExternalResponse
 import com.ravit.stash.domain.task.document.Task
+import com.ravit.stash.domain.task.document.TaskDetails
+import com.ravit.stash.domain.task.document.TaskPeriod
 import com.ravit.stash.domain.task.service.TaskService
 import com.ravit.stash.shared.code.TaskType
 import org.springframework.http.ResponseEntity
@@ -14,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/tasks")
-class TaskController(
+@RequestMapping("/externals/tasks")
+class TaskExternalController(
     private val taskService: TaskService,
 ) {
     @GetMapping
@@ -23,7 +27,7 @@ class TaskController(
         @RequestParam projectId: String?,
         @RequestParam type: TaskType?,
         @RequestParam keyword: String?,
-    ): ResponseEntity<List<Task>> {
+    ): ResponseEntity<List<TaskExternalResponse>> {
         val tasks =
             when {
                 projectId != null -> taskService.findByProjectId(projectId)
@@ -31,29 +35,54 @@ class TaskController(
                 keyword != null -> taskService.findByKeyword(keyword)
                 else -> taskService.findAll()
             }
-        return ResponseEntity.ok(tasks)
+        return ResponseEntity.ok(tasks.map { TaskExternalResponse.from(it) })
     }
 
     @GetMapping("/{id}")
     fun findById(
         @PathVariable id: String,
-    ): ResponseEntity<Task> {
+    ): ResponseEntity<TaskExternalResponse> {
         val task = taskService.findById(id) ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(task)
+        return ResponseEntity.ok(TaskExternalResponse.from(task))
     }
 
     @PostMapping
     fun save(
-        @RequestBody task: Task,
+        @RequestBody request: TaskExternalRequest,
         @RequestParam(defaultValue = "false") extractKeywords: Boolean,
-    ): ResponseEntity<Task> {
+    ): ResponseEntity<TaskExternalResponse> {
+        val task =
+            Task(
+                id = request.id,
+                projectId = request.projectId,
+                type = request.type,
+                title = request.title,
+                description = request.description,
+                period =
+                    request.period?.let {
+                        TaskPeriod(
+                            startedAt = it.startedAt,
+                            completedAt = it.completedAt,
+                        )
+                    },
+                workingDays = request.workingDays,
+                details =
+                    request.details?.let {
+                        TaskDetails(
+                            background = it.background,
+                            solution = it.solution,
+                            impact = it.impact,
+                        )
+                    },
+                keywords = request.keywords,
+            )
         val saved =
             if (extractKeywords) {
                 taskService.saveWithKeywordExtraction(task)
             } else {
                 taskService.save(task)
             }
-        return ResponseEntity.ok(saved)
+        return ResponseEntity.ok(TaskExternalResponse.from(saved))
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
-package com.ravit.stash.controller
+package com.ravit.stash.controller.internals.status
 
+import com.ravit.stash.controller.internals.status.response.StatusInternalResponse
 import com.ravit.stash.health.DependencyHealth
 import com.ravit.stash.health.DependencyHealthIndicator
 import com.ravit.stash.shared.code.HealthStatusType
@@ -8,21 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-data class StatusResponse(
-    val service: String,
-    val version: String,
-    val status: HealthStatusType,
-    val dependencies: List<DependencyHealth>,
-)
-
 @RestController
-@RequestMapping("/internal/status")
+@RequestMapping("/internals/status")
 class StatusInternalController(
     private val buildProperties: BuildProperties?,
     private val healthIndicators: List<DependencyHealthIndicator>,
 ) {
     @GetMapping
-    fun status(): StatusResponse {
+    fun status(): StatusInternalResponse {
         val results =
             healthIndicators.map { indicator ->
                 indicator to indicator.check()
@@ -31,7 +25,7 @@ class StatusInternalController(
 
         val overallStatus = calculateOverallStatus(results)
 
-        return StatusResponse(
+        return StatusInternalResponse(
             service = "stash",
             version = buildProperties?.version ?: "unknown",
             status = overallStatus,

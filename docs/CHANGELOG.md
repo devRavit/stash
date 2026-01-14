@@ -4,6 +4,19 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.1
+`2026.01.15 00:30`
+
+Controller 패키지 구조 리팩토링 및 API path 체계 개선
+
+- Controller를 externals/internals 패키지로 분리
+- API path 변경: /api/* → /externals/*, /internal/* → /internals/*
+- request/response 패턴 적용 (External 접미사)
+- 서비스 레이어 Command 패턴 도입 (ai/model/command)
+- 파일당 하나의 클래스/인터페이스 규칙 적용
+
+---
+
 ## v0.2.0
 `2026.01.14 17:00`
 

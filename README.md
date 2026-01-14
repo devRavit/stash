@@ -86,12 +86,12 @@ AI_GEMINI_KEY=your_gemini_api_key
 
 **Health Check**
 ```bash
-curl http://localhost:9090/health
+curl http://localhost:9090/externals/health
 ```
 
 **AI Integration Test**
 ```bash
-curl -X POST http://localhost:9090/api/ai/chat \
+curl -X POST http://localhost:9090/externals/ai/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "안녕하세요!"}'
 ```
@@ -101,16 +101,44 @@ curl -X POST http://localhost:9090/api/ai/chat \
 ## Project Structure
 
 ```
-src/
-├── main/
-│   ├── kotlin/
-│   │   └── com/ravit/stash/
-│   │       ├── controller/
-│   │       ├── service/
-│   │       ├── repository/
-│   │       ├── domain/
-│   │       └── StashApplication.kt
-│   └── resources/
-│       └── application.yml
-└── test/
+src/main/kotlin/com/ravit/stash/
+├── StashApplication.kt
+├── ai/                              # AI 관련 기능
+│   ├── agent/                       # Koog 에이전트
+│   ├── executor/                    # 프롬프트 실행기
+│   ├── model/command/               # 서비스 레이어 Command
+│   └── service/                     # AI 서비스
+├── configuration/                   # Spring 설정
+├── controller/                      # REST API 엔드포인트
+│   ├── externals/                   # 외부 API (/externals/*)
+│   │   ├── ai/                      # /externals/ai/chat
+│   │   ├── calendar/                # /externals/calendar/events
+│   │   ├── health/                  # /externals/health
+│   │   ├── project/                 # /externals/projects
+│   │   └── task/                    # /externals/tasks
+│   ├── internals/                   # 내부 API (/internals/*)
+│   │   └── status/                  # /internals/status
+│   └── GlobalExceptionHandler.kt
+├── domain/                          # 도메인 레이어
+│   ├── calendar/                    # 캘린더 도메인
+│   │   ├── client/
+│   │   ├── dto/
+│   │   ├── exception/
+│   │   └── service/
+│   ├── project/                     # 프로젝트 도메인
+│   │   ├── document/
+│   │   ├── repository/
+│   │   └── service/
+│   └── task/                        # 태스크 도메인
+│       ├── document/
+│       ├── repository/
+│       └── service/
+├── health/                          # 헬스체크 인디케이터
+├── infrastructure/                  # 외부 시스템 연동
+│   ├── extension/
+│   ├── gemini/                      # Google Gemini API
+│   └── google/calendar/             # Google Calendar API
+├── shared/                          # 공유 코드
+│   └── code/                        # Enum 타입 정의
+└── utility/                         # 유틸리티
 ```
