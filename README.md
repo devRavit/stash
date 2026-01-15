@@ -4,7 +4,12 @@
 
 ## Recent Changes
 
-[![v0.2.5](https://img.shields.io/badge/v0.2.5-purple)](./docs/CHANGELOG.md#v025) `2026.01.16 00:30`
+[![v0.2.6](https://img.shields.io/badge/v0.2.6-purple)](./docs/CHANGELOG.md#v026) `2026.01.16 10:30`
+- application-production.yml 추가 (환경변수 기반 설정)
+- application-prod.yml 삭제 (production으로 통합)
+- application.yml에서 기본 profile 설정 제거
+
+[![v0.2.5](https://img.shields.io/badge/v0.2.5-gray)](./docs/CHANGELOG.md#v025) `2026.01.16 00:30`
 - ChatSession 도메인 추가 (clientId 기반 세션 관리)
 - 대화 기록 저장 및 조회 API 추가 (/externals/sessions)
 - Gemini API 429 Rate Limit 에러 처리 추가
@@ -17,13 +22,6 @@
 - 환경별 origin 분리 (local: localhost, prod: ravit.run)
 - AWS Secrets Manager에서 운영 origin 주입
 - WebProperties 추가 (web.cors.allowed-origins)
-
-[![v0.2.3](https://img.shields.io/badge/v0.2.3-gray)](./docs/CHANGELOG.md#v023) `2026.01.15 01:30`
-- DataInternalController 추가 (DELETE /internals/data/*)
-- Project 응답에 tasks 포함 옵션 추가 (?includeTasks=true)
-- seed-data.sh 스크립트 추가 (포트폴리오 데이터 삽입)
-- Request DTO nullable 처리 (Jackson 호환)
-- KITA_ACADEMY enum 제거
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
