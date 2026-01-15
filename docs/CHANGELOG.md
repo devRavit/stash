@@ -4,6 +4,18 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.4
+`2026.01.15 03:00`
+
+CORS 설정 추가
+
+- WebFluxConfigurer 기반 CORS 설정 추가
+- 환경별 origin 분리 (local: localhost, prod: ravit.run)
+- AWS Secrets Manager에서 운영 origin 주입
+- WebProperties 추가 (web.cors.allowed-origins)
+
+---
+
 ## v0.2.3
 `2026.01.15 01:30`
 
