@@ -4,7 +4,13 @@
 
 ## Recent Changes
 
-[![v0.2.3](https://img.shields.io/badge/v0.2.3-purple)](./docs/CHANGELOG.md#v023) `2026.01.15 01:30`
+[![v0.2.4](https://img.shields.io/badge/v0.2.4-purple)](./docs/CHANGELOG.md#v024) `2026.01.15 03:00`
+- WebFluxConfigurer 기반 CORS 설정 추가
+- 환경별 origin 분리 (local: localhost, prod: ravit.run)
+- AWS Secrets Manager에서 운영 origin 주입
+- WebProperties 추가 (web.cors.allowed-origins)
+
+[![v0.2.3](https://img.shields.io/badge/v0.2.3-gray)](./docs/CHANGELOG.md#v023) `2026.01.15 01:30`
 - DataInternalController 추가 (DELETE /internals/data/*)
 - Project 응답에 tasks 포함 옵션 추가 (?includeTasks=true)
 - seed-data.sh 스크립트 추가 (포트폴리오 데이터 삽입)
@@ -22,13 +28,6 @@
 - 객체 변환 패턴 적용 (request.toXxx(), Response.from())
 - UUID → ObjectId 전환
 - MongoDB auto-index-creation 설정
-
-[![v0.2.1](https://img.shields.io/badge/v0.2.1-gray)](./docs/CHANGELOG.md#v021) `2026.01.15 00:30`
-- Controller를 externals/internals 패키지로 분리
-- API path 변경: /api/* → /externals/*, /internal/* → /internals/*
-- request/response 패턴 적용 (External 접미사)
-- 서비스 레이어 Command 패턴 도입 (ai/model/command)
-- 파일당 하나의 클래스/인터페이스 규칙 적용
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
