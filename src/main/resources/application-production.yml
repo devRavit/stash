@@ -2,11 +2,6 @@ spring:
   mongodb:
     uri: #secret manager
 
-logging:
-  level:
-    root: WARN
-    com.ravit.stash: INFO
-
 web:
   cors:
     allowed-origins: #secret manager
