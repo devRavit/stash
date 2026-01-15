@@ -4,7 +4,15 @@
 
 ## Recent Changes
 
-[![v0.2.4](https://img.shields.io/badge/v0.2.4-purple)](./docs/CHANGELOG.md#v024) `2026.01.15 03:00`
+[![v0.2.5](https://img.shields.io/badge/v0.2.5-purple)](./docs/CHANGELOG.md#v025) `2026.01.16 00:30`
+- ChatSession 도메인 추가 (clientId 기반 세션 관리)
+- 대화 기록 저장 및 조회 API 추가 (/externals/sessions)
+- Gemini API 429 Rate Limit 에러 처리 추가
+- GeminiException sealed class 추가 (RateLimitExceeded, ApiException)
+- Rate limit 발생 시 대화 내용 저장 안함
+- 친근한 에러 메시지 반환 ("오늘의 AI 토큰이 모두 소진되었어요")
+
+[![v0.2.4](https://img.shields.io/badge/v0.2.4-gray)](./docs/CHANGELOG.md#v024) `2026.01.15 03:00`
 - WebFluxConfigurer 기반 CORS 설정 추가
 - 환경별 origin 분리 (local: localhost, prod: ravit.run)
 - AWS Secrets Manager에서 운영 origin 주입
@@ -16,18 +24,6 @@
 - seed-data.sh 스크립트 추가 (포트폴리오 데이터 삽입)
 - Request DTO nullable 처리 (Jackson 호환)
 - KITA_ACADEMY enum 제거
-
-[![v0.2.2](https://img.shields.io/badge/v0.2.2-gray)](./docs/CHANGELOG.md#v022) `2026.01.15 01:00`
-- health → actuator 패키지 이동 (Spring Actuator 확장)
-- *Properties → property 패키지 분리
-- TaskPeriod, ProjectPeriod → shared.document.Period로 통합
-- TaskDetails → Task.kt 내부로 이동 (도메인 전용 value object)
-- controller/externals/shared 추가 (공용 Request/Response)
-- @WithKstZoneTime 어노테이션 추가 (KST 타임존 직렬화)
-- @Indexed 추가 (Task.projectId, Task.type, Project.company)
-- 객체 변환 패턴 적용 (request.toXxx(), Response.from())
-- UUID → ObjectId 전환
-- MongoDB auto-index-creation 설정
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
