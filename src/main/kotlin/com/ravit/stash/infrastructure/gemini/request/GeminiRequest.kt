@@ -5,6 +5,7 @@ data class GeminiRequest(
 )
 
 data class GeminiRequestContent(
+    val role: String? = null,
     val parts: List<GeminiRequestPart>,
 )
 

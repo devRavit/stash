@@ -4,6 +4,20 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.5
+`2026.01.16 00:30`
+
+AI 채팅 세션 관리 및 에러 처리 추가
+
+- ChatSession 도메인 추가 (clientId 기반 세션 관리)
+- 대화 기록 저장 및 조회 API 추가 (/externals/sessions)
+- Gemini API 429 Rate Limit 에러 처리 추가
+- GeminiException sealed class 추가 (RateLimitExceeded, ApiException)
+- Rate limit 발생 시 대화 내용 저장 안함
+- 친근한 에러 메시지 반환 ("오늘의 AI 토큰이 모두 소진되었어요")
+
+---
+
 ## v0.2.4
 `2026.01.15 03:00`
 
