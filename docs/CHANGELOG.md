@@ -4,6 +4,16 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.8
+`2026.01.16 14:30`
+
+Spring Cloud AWS 롤백 (Spring Boot 4.0 비호환)
+
+- spring-cloud-aws-starter-secrets-manager 의존성 제거
+- RuntimeEnvironmentSecrets 방식으로 복귀
+
+---
+
 ## v0.2.7
 `2026.01.16 14:00`
 
