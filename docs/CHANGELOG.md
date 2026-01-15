@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.6
+`2026.01.16 10:30`
+
+Production profile 설정 추가
+
+- application-production.yml 추가 (환경변수 기반 설정)
+- application-prod.yml 삭제 (production으로 통합)
+- application.yml에서 기본 profile 설정 제거
+
+---
+
 ## v0.2.5
 `2026.01.16 00:30`
 
