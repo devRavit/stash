@@ -4,7 +4,12 @@
 
 ## Recent Changes
 
-[![v0.2.6](https://img.shields.io/badge/v0.2.6-purple)](./docs/CHANGELOG.md#v026) `2026.01.16 10:30`
+[![v0.2.7](https://img.shields.io/badge/v0.2.7-purple)](./docs/CHANGELOG.md#v027) `2026.01.16 14:00`
+- spring-cloud-aws-starter-secrets-manager 의존성 추가
+- 앱 기동 시 IAM 권한으로 Secrets Manager 직접 읽기
+- application-production.yml 간소화 (logging만 유지)
+
+[![v0.2.6](https://img.shields.io/badge/v0.2.6-gray)](./docs/CHANGELOG.md#v026) `2026.01.16 10:30`
 - application-production.yml 추가 (환경변수 기반 설정)
 - application-prod.yml 삭제 (production으로 통합)
 - application.yml에서 기본 profile 설정 제거
@@ -16,12 +21,6 @@
 - GeminiException sealed class 추가 (RateLimitExceeded, ApiException)
 - Rate limit 발생 시 대화 내용 저장 안함
 - 친근한 에러 메시지 반환 ("오늘의 AI 토큰이 모두 소진되었어요")
-
-[![v0.2.4](https://img.shields.io/badge/v0.2.4-gray)](./docs/CHANGELOG.md#v024) `2026.01.15 03:00`
-- WebFluxConfigurer 기반 CORS 설정 추가
-- 환경별 origin 분리 (local: localhost, prod: ravit.run)
-- AWS Secrets Manager에서 운영 origin 주입
-- WebProperties 추가 (web.cors.allowed-origins)
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
