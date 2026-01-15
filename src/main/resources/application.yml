@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: local
-
   application:
     name: stash
 
@@ -26,7 +23,6 @@ logging:
 
 ai:
   gemini:
-    key: ${AI_GEMINI_KEY:}
     model: gemini-2.5-flash
     max-tokens: 8192
     temperature: 0.7
