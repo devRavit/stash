@@ -1,7 +1,4 @@
-spring:
-  mongodb:
-    uri: #secret manager
-
-web:
-  cors:
-    allowed-origins: #secret manager
+logging:
+  level:
+    root: INFO
+    com.ravit.stash: INFO

@@ -12,10 +12,11 @@ plugins {
 object Versions {
     const val KTOR = "3.2.3"
     const val KOOG_AGENTS = "0.6.0"
+    const val SPRING_CLOUD_AWS = "3.3.0"
 }
 
 group = "com.ravit"
-version = "0.2.6"
+version = "0.2.7"
 
 java {
     toolchain {
@@ -47,6 +48,9 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:${Versions.KTOR}")
     implementation("io.ktor:ktor-client-content-negotiation:${Versions.KTOR}")
     implementation("io.ktor:ktor-serialization-jackson:${Versions.KTOR}")
+
+    // AWS - Spring Cloud AWS Secrets Manager
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:${Versions.SPRING_CLOUD_AWS}")
 
     // Google Calendar API
     implementation("com.google.api-client:google-api-client:2.0.0")

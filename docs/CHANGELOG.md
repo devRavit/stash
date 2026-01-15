@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.7
+`2026.01.16 14:00`
+
+Spring Cloud AWS Secrets Manager 연동
+
+- spring-cloud-aws-starter-secrets-manager 의존성 추가
+- 앱 기동 시 IAM 권한으로 Secrets Manager 직접 읽기
+- application-production.yml 간소화 (logging만 유지)
+
+---
+
 ## v0.2.6
 `2026.01.16 10:30`
 
