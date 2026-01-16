@@ -4,6 +4,16 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.8
+`2026.01.17 16:00`
+
+Spring Cloud AWS 4.0.0-RC1 업그레이드
+
+- Spring Boot 4.0 호환을 위해 Spring Cloud AWS 4.0.0-RC1로 업그레이드
+- Spring Cloud AWS 3.3.0은 Spring Boot 4.0과 호환되지 않음 (PropertyMapper.whenNonNull 제거됨)
+
+---
+
 ## v0.2.7
 `2026.01.16 14:00`
 
