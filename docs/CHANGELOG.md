@@ -4,6 +4,16 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.11
+`2026.01.17 02:15`
+
+새 이미지 배포 트리거
+
+- production 로깅 설정 복구 (com.ravit.stash: INFO)
+- /externals/health endpoint 포함된 이미지 배포
+
+---
+
 ## v0.2.10
 `2026.01.17 17:30`
 
