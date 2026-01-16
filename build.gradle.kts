@@ -12,11 +12,11 @@ plugins {
 object Versions {
     const val KTOR = "3.2.3"
     const val KOOG_AGENTS = "0.6.0"
-    const val SPRING_CLOUD_AWS = "3.3.0"
+    const val SPRING_CLOUD_AWS = "4.0.0-RC1"
 }
 
 group = "com.ravit"
-version = "0.2.7"
+version = "0.2.8"
 
 java {
     toolchain {
