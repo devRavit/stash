@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.9
+`2026.01.17 17:00`
+
+spring.config.import 설정 추가
+
+- application-production.yml에 spring.config.import 설정 직접 추가
+- 환경변수 주입 방식 대신 앱 설정 파일에서 직접 Secrets Manager 연동
+- 운영 환경에서는 Secrets Manager 연결 필수 (실패 시 앱 기동 중단)
+
+---
+
 ## v0.2.8
 `2026.01.17 16:00`
 
