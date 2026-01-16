@@ -4,7 +4,11 @@
 
 ## Recent Changes
 
-[![v0.2.7](https://img.shields.io/badge/v0.2.7-purple)](./docs/CHANGELOG.md#v027) `2026.01.16 14:00`
+[![v0.2.8](https://img.shields.io/badge/v0.2.8-purple)](./docs/CHANGELOG.md#v028) `2026.01.17 16:00`
+- Spring Boot 4.0 호환을 위해 Spring Cloud AWS 4.0.0-RC1로 업그레이드
+- Spring Cloud AWS 3.3.0은 Spring Boot 4.0과 호환되지 않음 (PropertyMapper.whenNonNull 제거됨)
+
+[![v0.2.7](https://img.shields.io/badge/v0.2.7-gray)](./docs/CHANGELOG.md#v027) `2026.01.16 14:00`
 - spring-cloud-aws-starter-secrets-manager 의존성 추가
 - 앱 기동 시 IAM 권한으로 Secrets Manager 직접 읽기
 - application-production.yml 간소화 (logging만 유지)
@@ -13,14 +17,6 @@
 - application-production.yml 추가 (환경변수 기반 설정)
 - application-prod.yml 삭제 (production으로 통합)
 - application.yml에서 기본 profile 설정 제거
-
-[![v0.2.5](https://img.shields.io/badge/v0.2.5-gray)](./docs/CHANGELOG.md#v025) `2026.01.16 00:30`
-- ChatSession 도메인 추가 (clientId 기반 세션 관리)
-- 대화 기록 저장 및 조회 API 추가 (/externals/sessions)
-- Gemini API 429 Rate Limit 에러 처리 추가
-- GeminiException sealed class 추가 (RateLimitExceeded, ApiException)
-- Rate limit 발생 시 대화 내용 저장 안함
-- 친근한 에러 메시지 반환 ("오늘의 AI 토큰이 모두 소진되었어요")
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
