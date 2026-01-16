@@ -4,6 +4,17 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.10
+`2026.01.17 17:30`
+
+spring.config.import 설정 위치 변경
+
+- application.yml로 spring.config.import 설정 이동
+- profile-specific 파일의 config import는 Spring Boot 4.0에서 처리되지 않음
+- application-production.yml에서 해당 설정 제거
+
+---
+
 ## v0.2.9
 `2026.01.17 17:00`
 
