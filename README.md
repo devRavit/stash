@@ -4,7 +4,11 @@
 
 ## Recent Changes
 
-[![v0.2.11](https://img.shields.io/badge/v0.2.11-purple)](./docs/CHANGELOG.md#v0211) `2026.01.17 02:15`
+[![v0.2.12](https://img.shields.io/badge/v0.2.12-purple)](./docs/CHANGELOG.md#v0212) `2026.01.17 03:10`
+- production profile 설정 간소화
+- App Runner 서비스 재배포 트리거
+
+[![v0.2.11](https://img.shields.io/badge/v0.2.11-gray)](./docs/CHANGELOG.md#v0211) `2026.01.17 02:15`
 - production 로깅 설정 복구 (com.ravit.stash: INFO)
 - /externals/health endpoint 포함된 이미지 배포
 
@@ -12,11 +16,6 @@
 - application.yml로 spring.config.import 설정 이동
 - profile-specific 파일의 config import는 Spring Boot 4.0에서 처리되지 않음
 - application-production.yml에서 해당 설정 제거
-
-[![v0.2.9](https://img.shields.io/badge/v0.2.9-gray)](./docs/CHANGELOG.md#v029) `2026.01.17 17:00`
-- application-production.yml에 spring.config.import 설정 직접 추가
-- 환경변수 주입 방식 대신 앱 설정 파일에서 직접 Secrets Manager 연동
-- 운영 환경에서는 Secrets Manager 연결 필수 (실패 시 앱 기동 중단)
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
