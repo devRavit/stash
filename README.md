@@ -4,7 +4,12 @@
 
 ## Recent Changes
 
-[![v0.2.9](https://img.shields.io/badge/v0.2.9-purple)](./docs/CHANGELOG.md#v029) `2026.01.17 17:00`
+[![v0.2.10](https://img.shields.io/badge/v0.2.10-purple)](./docs/CHANGELOG.md#v0210) `2026.01.17 17:30`
+- application.yml로 spring.config.import 설정 이동
+- profile-specific 파일의 config import는 Spring Boot 4.0에서 처리되지 않음
+- application-production.yml에서 해당 설정 제거
+
+[![v0.2.9](https://img.shields.io/badge/v0.2.9-gray)](./docs/CHANGELOG.md#v029) `2026.01.17 17:00`
 - application-production.yml에 spring.config.import 설정 직접 추가
 - 환경변수 주입 방식 대신 앱 설정 파일에서 직접 Secrets Manager 연동
 - 운영 환경에서는 Secrets Manager 연결 필수 (실패 시 앱 기동 중단)
@@ -12,11 +17,6 @@
 [![v0.2.8](https://img.shields.io/badge/v0.2.8-gray)](./docs/CHANGELOG.md#v028) `2026.01.17 16:00`
 - Spring Boot 4.0 호환을 위해 Spring Cloud AWS 4.0.0-RC1로 업그레이드
 - Spring Cloud AWS 3.3.0은 Spring Boot 4.0과 호환되지 않음 (PropertyMapper.whenNonNull 제거됨)
-
-[![v0.2.7](https://img.shields.io/badge/v0.2.7-gray)](./docs/CHANGELOG.md#v027) `2026.01.16 14:00`
-- spring-cloud-aws-starter-secrets-manager 의존성 추가
-- 앱 기동 시 IAM 권한으로 Secrets Manager 직접 읽기
-- application-production.yml 간소화 (logging만 유지)
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
