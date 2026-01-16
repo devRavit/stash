@@ -4,6 +4,16 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.12
+`2026.01.17 03:10`
+
+App Runner 서비스 재생성
+
+- production profile 설정 간소화
+- App Runner 서비스 재배포 트리거
+
+---
+
 ## v0.2.11
 `2026.01.17 02:15`
 
