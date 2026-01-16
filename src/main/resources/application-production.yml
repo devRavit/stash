@@ -1,4 +1,1 @@
-logging:
-  level:
-    root: INFO
-    com.ravit.stash: INFO
+# Production profile - uses application.yml defaults

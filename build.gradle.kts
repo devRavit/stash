@@ -16,7 +16,7 @@ object Versions {
 }
 
 group = "com.ravit"
-version = "0.2.11"
+version = "0.2.12"
 
 java {
     toolchain {
