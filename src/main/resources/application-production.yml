@@ -1,7 +1,3 @@
-spring:
-  config:
-    import: aws-secretsmanager:production/stash
-
 logging:
   level:
     root: INFO
