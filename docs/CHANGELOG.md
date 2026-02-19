@@ -4,6 +4,15 @@
 
 <!-- CHANGELOG_START -->
 
+## v0.2.13
+`2026.02.19 00:00`
+
+Claude Code 불필요한 파일 탐색 방지를 위한 .claudeignore 추가
+
+- build/, .gradle/, logs/ 등 빌드 산출물 및 로그 제외
+
+---
+
 ## v0.2.12
 `2026.01.17 03:10`
 
