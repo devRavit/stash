@@ -4,16 +4,18 @@
 
 ## Recent Changes
 
-[![v0.2.13](https://img.shields.io/badge/v0.2.13-purple)](./docs/CHANGELOG.md#v0213) `2026.02.19 00:00`
+[![v0.2.14](https://img.shields.io/badge/v0.2.14-purple)](./docs/CHANGELOG.md#v0214) `2026.03.10 00:00`
+- JDK 24 → 25
+- Kotlin 2.2.21 → 2.3.0
+- Spring Boot 4.0.0 → 4.0.3
+- Gradle 8.14 → 9.4.0
+
+[![v0.2.13](https://img.shields.io/badge/v0.2.13-gray)](./docs/CHANGELOG.md#v0213) `2026.02.19 00:00`
 - build/, .gradle/, logs/ 등 빌드 산출물 및 로그 제외
 
 [![v0.2.12](https://img.shields.io/badge/v0.2.12-gray)](./docs/CHANGELOG.md#v0212) `2026.01.17 03:10`
 - production profile 설정 간소화
 - App Runner 서비스 재배포 트리거
-
-[![v0.2.11](https://img.shields.io/badge/v0.2.11-gray)](./docs/CHANGELOG.md#v0211) `2026.01.17 02:15`
-- production 로깅 설정 복구 (com.ravit.stash: INFO)
-- /externals/health endpoint 포함된 이미지 배포
 
 
 [전체 변경 내역 →](./docs/CHANGELOG.md)
